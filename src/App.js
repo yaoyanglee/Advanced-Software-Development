@@ -15,14 +15,14 @@ function App() {
   return (
     <div className="max-w-[1440px] mx-auto bg-white ">
       {/* Uncomment this code to see how we can query the database */}
-      <RegisterProperty />
+      {/* <RegisterProperty /> */}
 
       {/* Uncomment this code below to get back to the normal functionality */}
-      {/* <Header />
+      <Header />
       <Routes>
         <Route path="/" element={<Home />} />
       </Routes>
-      <Footer /> */}
+      <Footer />
     </div>
   );
 }
