@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import {
   Button,
   Checkbox,
@@ -14,8 +16,10 @@ import {
   MenuItem,
   InputLabel,
   IconButton,
+  Snackbar,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import MuiAlert from "@mui/material/Alert";
 import app from "../Firebase";
 import {
   collection,
@@ -26,7 +30,14 @@ import {
   getFirestore,
 } from "firebase/firestore";
 
-export default function UploadPropertyModal({ modal, toggleModal }) {
+import "./UploadPropertyCss.css";
+
+// Snackbar Alert component
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+export default function RentPropertyModal({ modal, toggleModal }) {
   const db = getFirestore(app);
 
   const [role, setRole] = useState(""); // State to track selected role
@@ -38,6 +49,11 @@ export default function UploadPropertyModal({ modal, toggleModal }) {
   const [agentName, setAgentName] = useState("");
   const [price, setPrice] = useState("");
   const [address, setAddress] = useState("");
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+
+  // Manages the opening and closing of the snackbar
+  const [openSnackbar, setOpenSnackbar] = useState(false);
 
   const handleRoleChange = (event) => {
     setRole(event.target.value);
@@ -45,6 +61,10 @@ export default function UploadPropertyModal({ modal, toggleModal }) {
 
   const handlePropertyTypeChange = (event) => {
     setPropertyType(event.target.value);
+  };
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
   };
 
   const handleSubmit = async () => {
@@ -59,8 +79,11 @@ export default function UploadPropertyModal({ modal, toggleModal }) {
         agentName,
         role,
         propertyType,
+        startDate,
+        endDate,
       });
-      alert("Property uploaded successfully!");
+      setOpenSnackbar(true);
+      // alert("Property uploaded successfully!");
       toggleModal(); // Close modal on successful submission
     } catch (error) {
       console.error("Error uploading property: ", error);
@@ -75,7 +98,7 @@ export default function UploadPropertyModal({ modal, toggleModal }) {
       </Button> */}
       <Dialog open={modal} fullWidth maxWidth="sm">
         <DialogTitle>
-          Upload Property{" "}
+          Upload Property for Rent{" "}
           <IconButton onClick={toggleModal} style={{ float: "right" }}>
             <CloseIcon></CloseIcon>
           </IconButton>{" "}
@@ -117,6 +140,28 @@ export default function UploadPropertyModal({ modal, toggleModal }) {
               label="Agent/Landlord Name"
               onChange={(e) => setAgentName(e.target.value)}
             ></TextField>
+
+            <Stack direction="row" spacing={2}>
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+                placeholderText="Select Start Date"
+                className="custom-datepicker"
+              />
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+                placeholderText="Select End Date"
+                className="custom-datepicker"
+              />
+            </Stack>
 
             <InputLabel id="role-select-label">You are a ...</InputLabel>
             <Select
@@ -162,6 +207,16 @@ export default function UploadPropertyModal({ modal, toggleModal }) {
           </Button> */}
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose} severity="success">
+          Property uploaded successfully!
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

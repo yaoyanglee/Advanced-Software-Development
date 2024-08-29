@@ -8,7 +8,7 @@ import Footer from "./components/Footer";
 
 import Home from "./pages/Home";
 import RegisterProperty from "./pages/RegisterProperty";
-import UploadPropertyModal from "./pages/UploadPropertyModal";
+import RentPropertyModal from "./pages/RentPropertyModal";
 import SellPropertyModal from "./pages/SellPropertyModal";
 
 // import Banner from "./components/Banner";
@@ -38,7 +38,7 @@ function App() {
         toggleRentModal={toggleRentModal}
         toggleSellModal={toggleSellModal}
       />
-      <UploadPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
+      <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
       <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} />
       <Routes>
         <Route path="/" element={<Home />} />

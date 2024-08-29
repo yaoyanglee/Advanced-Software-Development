@@ -1,3 +1,5 @@
+// THIS FILE IS REDUNDANT FOR NOW
+
 import { React, useState, useEffect } from "react";
 
 import app from "../Firebase";

@@ -14,8 +14,10 @@ import {
   MenuItem,
   InputLabel,
   IconButton,
+  Snackbar,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import MuiAlert from "@mui/material/Alert";
 import app from "../Firebase";
 import {
   collection,
@@ -25,6 +27,11 @@ import {
   addDoc,
   getFirestore,
 } from "firebase/firestore";
+
+// Snackbar Alert component
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export default function SellPropertyModal({ modal, toggleModal }) {
   const db = getFirestore(app);
@@ -39,12 +46,19 @@ export default function SellPropertyModal({ modal, toggleModal }) {
   const [price, setPrice] = useState("");
   const [address, setAddress] = useState("");
 
+  // Manages the opening and closing of the snackbar
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
   const handleRoleChange = (event) => {
     setRole(event.target.value);
   };
 
   const handlePropertyTypeChange = (event) => {
     setPropertyType(event.target.value);
+  };
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
   };
 
   const handleSubmit = async () => {
@@ -60,7 +74,8 @@ export default function SellPropertyModal({ modal, toggleModal }) {
         role,
         propertyType,
       });
-      alert("Property uploaded successfully!");
+      setOpenSnackbar(true);
+      // alert("Property uploaded successfully!");
       toggleModal(); // Close modal on successful submission
     } catch (error) {
       console.error("Error uploading property: ", error);
@@ -75,7 +90,7 @@ export default function SellPropertyModal({ modal, toggleModal }) {
       </Button> */}
       <Dialog open={modal} fullWidth maxWidth="sm">
         <DialogTitle>
-          Upload Property{" "}
+          Upload Property For Sale{" "}
           <IconButton onClick={toggleModal} style={{ float: "right" }}>
             <CloseIcon></CloseIcon>
           </IconButton>{" "}
@@ -162,6 +177,16 @@ export default function SellPropertyModal({ modal, toggleModal }) {
           </Button> */}
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose} severity="success">
+          Property uploaded successfully!
+        </Alert>
+      </Snackbar>
     </div>
   );
 }
