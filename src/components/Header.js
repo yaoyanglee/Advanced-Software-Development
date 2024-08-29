@@ -18,7 +18,6 @@ const Header = ({ toggleRentModal, toggleSellModal }) => {
           <Link
             className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
             to=""
-            onClick={toggleRentModal}
           >
             Rent
           </Link>
@@ -34,6 +33,13 @@ const Header = ({ toggleRentModal, toggleSellModal }) => {
             onClick={toggleSellModal}
           >
             Sell
+          </Link>
+          <Link
+            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
+            to=""
+            onClick={toggleRentModal}
+          >
+            Upload Rental Property
           </Link>
           <Link
             className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
