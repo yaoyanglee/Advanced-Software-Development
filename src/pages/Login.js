@@ -4,6 +4,8 @@ import { auth } from "../Firebase";
 import './Login&Signup.css';
 import googleLogo from '../assets/img/googleIcon.png'
 import { Link } from "react-router-dom";
+import {ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function LogIn() {
   const [email, setEmail] = useState("");
@@ -14,8 +16,15 @@ function LogIn() {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log("User logged in successfully");
+      toast.success("Sign Up Accounct Successfully!", {
+        position: "top-center",
+      });
+      window.location.href="/";
     } catch (error) {
       console.log(error.message);
+      toast.error(error.message, {
+        position: "top-center",
+      });
     }
   };
 
@@ -23,7 +32,7 @@ function LogIn() {
     <div
       style={{
         height: "100vh",
-        backgroundColor: "#4070f4",
+        backgroundColor: "#4070f4", 
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -74,6 +83,12 @@ function LogIn() {
             </div>
             </div>
         </div>
+        <ToastContainer 
+         style={{
+         width: "400px",
+         height: "20px",  
+        }}
+       />
     </div>
   );
 }

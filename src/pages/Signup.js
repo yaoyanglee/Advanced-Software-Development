@@ -1,25 +1,43 @@
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../Firebase"; 
+import { auth, db } from "../Firebase"; 
+import {setDoc, doc} from "firebase/firestore";
 import './Login&Signup.css';
 import googleLogo from '../assets/img/googleIcon.png'
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+// import 'react-toastify/dist/ReactToastify.css';
+
 
 function SignUp() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
-
+   
   const handleSignUp = async (e) => {
     e.preventDefault();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       const user = auth.currentUser;
       console.log(user);
+      if (user) {
+        await setDoc(doc(db,"Users", user.uid), {
+          Name: name,
+          Email: user.email,
+          Password: password,
+          Phone: phone,
+        });    
+      }
       console.log("User Registered Successfully!!");
+      toast.success("Sign Up Accounct Successfully!", {
+        position: "top-center",
+      });
     } catch (error) {
       console.log(error.message);
+      toast.error(error.message, {
+        position: "top-center",
+        });
     }
   };
 
@@ -33,7 +51,8 @@ function SignUp() {
         justifyContent: "center",
       }}
     >
-      <div className="form-forms">
+    <div>
+     <div className="form-forms">
       <Link to= "/">Back</Link>
         <div className="form-content">
             <header>Signup</header>
@@ -95,7 +114,14 @@ function SignUp() {
             </a>
         </div>
       </div>
-    </div>
+     </div>
+     <ToastContainer 
+      style={{
+        width: "400px",
+        height: "20px",  
+      }}
+      />
+    </div> 
   );
 }
 
