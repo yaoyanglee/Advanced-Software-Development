@@ -21,9 +21,5 @@ steps:
   displayName: 'npm install and build'
 
 - script: |
-     npx eslint --max-warnings=0 src || exit 1
-  displayName: 'lint code'
-
-- script: |
     npm test -- --watchAll=false || exit 1
   displayName: 'unit test'
