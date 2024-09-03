@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../Firebase"; 
 import {setDoc, doc} from "firebase/firestore";
-import './Login&Signup.css';
+import './Login&Signup&reset.css';
 import googleLogo from '../assets/img/googleIcon.png'
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-// import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 function SignUp() {
@@ -100,6 +100,7 @@ function SignUp() {
             </div>
             <div className="field button-field">
                 <button type="submit">Signup</button>
+                <ToastContainer />
             </div>
             </form>
             <div className="form-link">
@@ -115,12 +116,6 @@ function SignUp() {
         </div>
       </div>
      </div>
-     <ToastContainer 
-      style={{
-        width: "400px",
-        height: "20px",  
-      }}
-      />
     </div> 
   );
 }
