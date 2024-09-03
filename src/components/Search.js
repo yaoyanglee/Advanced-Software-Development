@@ -11,7 +11,8 @@ import SearchBox from "./SearchBox";
 
 const Search = () => {
   // const{houses} = useContext(HouseContext);
-  // const {handleClick} = useContext(HouseContext);
+  const { handleClick } = useContext(HouseContext);
+
   return (
     // <div className="px-[20px] py-6 max-w-[1200px] mx-auto flex flex-col lg:flex-row justify-between gap-3 lg:gap-x-3 relative  lg:bg-white rounded-lg">
     //     <CountryDropdown/>
