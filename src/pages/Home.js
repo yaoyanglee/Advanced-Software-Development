@@ -1,15 +1,35 @@
-import React from "react";
-
+import React, { useState } from "react";
 import HouseList from "../components/HouseList";
 import Search from "../components/Search";
+import Navbar from "../components/Navbar";
+import RentPropertyModal from "./RentPropertyModal";
+import SellPropertyModal from "./SellPropertyModal";
 
 const Home = () => {
-    return(
-        <div className="min-h-[1800px] ">
-            <Search />
-            <HouseList/>
-        </div>
-    )
-}
+  const [rentModal, setRentModal] = useState(false);
+  const [sellModal, setSellModal] = useState(false);
+
+  const toggleRentModal = () => {
+    setRentModal(!rentModal);
+  };
+
+  const toggleSellModal = () => {
+    setSellModal(!sellModal);
+  };
+
+  return (
+    <div className="min-h-[1800px] ">
+      <Navbar
+        toggleRentModal={toggleRentModal}
+        toggleSellModal={toggleSellModal}
+      />
+      <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
+      <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} />
+
+      <Search />
+      <HouseList />
+    </div>
+  );
+};
 
 export default Home;
