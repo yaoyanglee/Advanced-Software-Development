@@ -3,8 +3,6 @@ import Home from "./pages/Home";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import PropertyList from "./pages/PropertyList";
-// import RentPropertyModal from "./pages/RentPropertyModal";
-// import SellPropertyModal from "./pages/SellPropertyModal";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 
