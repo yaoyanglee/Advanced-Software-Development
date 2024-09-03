@@ -1,69 +1,72 @@
 import React from "react";
-
 import { Link } from "react-router-dom";
-
-// import Logo from "../assets/img/logo.svg";
 
 const Header = ({ toggleRentModal, toggleSellModal }) => {
   return (
     <header className="py-6 mb-12 border-b">
       <div className="container mx-auto flex justify-between items-center font-bold text-gray-800">
-        <div className="flex justify-between items-center gap-6">
-          <Link to="/">
-            {/* <img src={Logo} alt="logo"/> */}
-            <p className="text-violet-700 hover:text-violet-800 text-3xl font-bold transition">
-              91acres
-            </p>
-          </Link>
+        <Link
+          to="/"
+          className="text-violet-700 hover:text-violet-800 text-3xl font-bold transition"
+        >
+          91acres
+        </Link>
+        <div className="flex gap-6">
           <Link
+            to="/"
             className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
-            to=""
           >
             Rent
           </Link>
           <Link
+            to="/"
             className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
-            to=""
           >
             Buy
           </Link>
           <Link
-            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
-            to=""
+            to="#"
             onClick={toggleSellModal}
+            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
           >
             Sell
           </Link>
           <Link
-            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
-            to=""
+            to="#"
             onClick={toggleRentModal}
+            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
           >
             Upload Rental Property
           </Link>
           <Link
+            to="/favourites"
             className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
-            to=""
+          >
+            Favourites
+          </Link>
+          <Link
+            to="/"
+            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
           >
             Manage Property
           </Link>
           <Link
+            to="/"
             className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
-            to=""
           >
             Resources
           </Link>
         </div>
-        <div className="flex items-center gap-6 ">
+        <div className="flex gap-6">
           <Link
-            className="border-2 text-violet-800  px-4 py-3 rounded-lg hover:bg-violet-300 hover:text-white transition"
-            to=""
+            to="/"
+            className="border-2 text-violet-800 px-4 py-3 rounded-lg hover:bg-violet-300 hover:text-white transition"
           >
             Log in
           </Link>
           <Link
-            className="bg-violet-700 hover:bg-violet-800 text-white px-4 py-3 rounded-lg transition "
-            to=""
+            to="/"
+            className="bg-violet-700 hover:bg-violet-800 text-white px-4 py-3 rounded-lg transition"
           >
             Sign up
           </Link>

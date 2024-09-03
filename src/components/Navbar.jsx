@@ -36,7 +36,13 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
             to="/RegisterProperty"
             onClick={toggleRentModal}
           >
-            Upload Rental Property
+            Upload Rental
+          </Link>
+          <Link
+            to="/favourites"
+            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
+          >
+            Favourites
           </Link>
           <Link
             className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
@@ -44,12 +50,12 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
           >
             Manage Property
           </Link>
-          <Link
+          {/* <Link
             className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
             to=""
           >
             Resources
-          </Link>
+          </Link> */}
         </div>
         <div className="flex items-center gap-6 ">
           <Link

@@ -1,9 +1,10 @@
 import React, { useState, useEffect, createContext } from "react";
-
 import { housesData } from "../data";
 
+// Create the HouseContext
 export const HouseContext = createContext();
 
+// HouseContextProvider component
 const HouseContextProvider = ({ children }) => {
   const [houses, setHouses] = useState(housesData);
   const [country, setCountry] = useState("Location (any)");
@@ -12,66 +13,34 @@ const HouseContextProvider = ({ children }) => {
   const [properties, setProperties] = useState([]);
   const [price, setPrice] = useState("Price range (any)");
   const [startDate, setStartDate] = useState("Rent Date (any)");
-  // const [startDate, setStartDate] = useState('Date (any)')
   const [loading, setLoading] = useState(false);
 
-  //countries
+  // Fetch countries based on available houses
   useEffect(() => {
-    const allCountries = houses.map((house) => {
-      return house.country;
-    });
-    // console.log(allCountries);
-
+    const allCountries = houses.map((house) => house.country);
     const uniqueCountries = ["Location (any)", ...new Set(allCountries)];
-
-    // console.log(uniqu eCountries);
-
     setCountries(uniqueCountries);
   }, [houses]);
 
-  //properties
+  // Fetch property types based on available houses
   useEffect(() => {
-    const allProperties = houses.map((house) => {
-      return house.type;
-    });
-    // console.log(allProperties);
-
+    const allProperties = houses.map((house) => house.type);
     const uniqueProperties = ["Property (any)", ...new Set(allProperties)];
-
-    // console.log(uniqueProperties);
-
     setProperties(uniqueProperties);
   }, [houses]);
 
   const handleClick = () => {
-    //loading
     setLoading(true);
 
-    // console.log('clicked');
-    // console.log(country, property, price, date);
-
-    const isDefault = (str) => {
-      return str.split(" ").includes("(any)");
-    };
-    // console.log(isDefault(country));
+    const isDefault = (str) => str.split(" ").includes("(any)");
 
     const minPrice = parseInt(price.split(" ")[0]);
-    // console.log(minPrice);
     const maxPrice = parseInt(price.split(" ")[2]);
-
     const dateSelected = parseInt(startDate);
-    // console.log(dateSelected);
 
-    // console.log(maxPrice);
-    // const newHousesm = housesData.filter((house) => {
-    //     console.log(house.price);
-    // })
-    // console.log(dateAvailableTill);
     const newHouses = housesData.filter((house) => {
       const housePrice = parseInt(house.price);
-      // console.log(housePrice);
       const houseAvailableDate = parseInt(house.date);
-      // console.log(`houseDate: ${houseDate}`);
 
       if (
         house.country === country &&
@@ -83,7 +52,6 @@ const HouseContextProvider = ({ children }) => {
         return house;
       }
 
-      //if all values are default
       if (
         isDefault(country) &&
         isDefault(property) &&
@@ -93,56 +61,30 @@ const HouseContextProvider = ({ children }) => {
         return house;
       }
 
-      //if country is not default
-      if (
-        !isDefault(country) &&
-        isDefault(price) &&
-        isDefault(price) &&
-        isDefault(startDate)
-      ) {
+      if (!isDefault(country) && isDefault(property) && isDefault(price) && isDefault(startDate)) {
         return house.country === country;
       }
 
-      //if property is not default
-      if (
-        !isDefault(property) &&
-        isDefault(country) &&
-        isDefault(price) &&
-        isDefault(startDate)
-      ) {
+      if (!isDefault(property) && isDefault(country) && isDefault(price) && isDefault(startDate)) {
         return house.type === property;
       }
 
-      //if price is not default
-      if (
-        !isDefault(price) &&
-        isDefault(country) &&
-        isDefault(property) &&
-        isDefault(startDate)
-      ) {
+      if (!isDefault(price) && isDefault(country) && isDefault(property) && isDefault(startDate)) {
         if (house.price >= minPrice && house.price <= maxPrice) {
           return house;
         }
       }
 
-      if (
-        !isDefault(startDate) &&
-        isDefault(country) &&
-        isDefault(property) &&
-        isDefault(price)
-      ) {
+      if (!isDefault(startDate) && isDefault(country) && isDefault(property) && isDefault(price)) {
         if (houseAvailableDate >= dateSelected) {
           return house;
         }
       }
     });
 
-    // console.log(newHouses);
     setTimeout(() => {
-      return (
-        newHouses.length < 1 ? setHouses([]) : setHouses(newHouses),
-        setLoading(false)
-      );
+      setHouses(newHouses.length < 1 ? [] : newHouses);
+      setLoading(false);
     }, 1000);
   };
 
