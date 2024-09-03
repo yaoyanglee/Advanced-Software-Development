@@ -1,4 +1,4 @@
-// THIS FILE IS REDUNDANT FOR NOW
+ // THIS FILE IS REDUNDANT FOR NOW
 
 import { React, useState, useEffect } from "react";
 

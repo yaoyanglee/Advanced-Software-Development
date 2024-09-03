@@ -1,24 +1,25 @@
 import React, { useState } from "react";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { app, auth } from "../Firebase";
-import "./Login&Signup.css";
-import googleLogo from "../assets/img/googleIcon.png";
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../Firebase"; 
+import './Login&Signup&reset.css';
+import googleLogo from '../assets/img/googleIcon.png';
 import { Link } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer,toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function LogIn() {
   // const auth = getAuth(app);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
 
   const handleLogIn = async (e) => {
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
       console.log("User logged in successfully");
-      toast.success("Sign Up Accounct Successfully!", {
+      toast.success("Logged in successfully!", {
         position: "top-center",
       });
       window.location.href = "/";
@@ -27,6 +28,30 @@ function LogIn() {
       toast.error(error.message, {
         position: "top-center",
       });
+    }
+  };
+
+  const LoginWithGoogle = async () => {
+    if (isGoogleSigningIn) return; // Prevent multiple popup requests
+    setIsGoogleSigningIn(true); // Set flag to indicate the request is in progress
+
+    try {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      console.log(result);
+      if (result.user) {
+        toast.success("Logged in successfully!", {
+          position: "top-center",
+        });
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.error(error.message);
+      toast.error(error.message, {
+        position: "top-center",
+      });
+    } finally {
+      setIsGoogleSigningIn(false); // Reset flag after the request is completed
     }
   };
 
@@ -67,37 +92,29 @@ function LogIn() {
               <i className="bx bx-hide eye-icon"></i>
             </div>
             <div className="form-link">
-              <a href="#" className="forgot-pass">
-                Forgot password?
-              </a>
+              <Link to="/Reset" className="forgot-pass">Forgot password?</Link>
             </div>
             <div className="field button-field">
               <button type="submit">Login</button>
+              <ToastContainer />
             </div>
           </form>
           <div className="form-link">
-            <span>
-              Don't have an account?{" "}
-              <Link to="/Signup" className="link signup-link">
-                Signup
-              </Link>
-            </span>
+            <span>Don't have an account? <Link to="/Signup" className="link signup-link">Signup</Link></span>
           </div>
           <div className="line"></div>
           <div className="media-options">
-            <a href="#" className="field google">
+            <button
+              className="field google"
+              onClick={LoginWithGoogle}
+              disabled={isGoogleSigningIn}
+            >
               <img src={googleLogo} alt="Google Icon" className="google-img" />
               <span>Login with Google</span>
-            </a>
+            </button>
           </div>
         </div>
       </div>
-      <ToastContainer
-        style={{
-          width: "400px",
-          height: "20px",
-        }}
-      />
     </div>
   );
 }

@@ -1,15 +1,13 @@
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
-
-import { auth, db } from "../Firebase";
-// import app from "../Firebase";
-
-import { setDoc, doc, getFirestore } from "firebase/firestore";
-import "./Login&Signup.css";
-import googleLogo from "../assets/img/googleIcon.png";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../Firebase"; 
+import {setDoc, doc} from "firebase/firestore";
+import './Login&Signup&reset.css';
+import googleLogo from '../assets/img/googleIcon.png'
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-// import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function SignUp() {
   // const auth = getAuth(app);
@@ -105,7 +103,8 @@ function SignUp() {
               </div>
               <div className="field button-field">
                 <button type="submit">Signup</button>
-              </div>
+                <ToastContainer />
+            </div>
             </form>
             <div className="form-link">
               <span>
@@ -122,16 +121,10 @@ function SignUp() {
               <img src={googleLogo} alt="Google Icon" className="google-img" />
               <span>Login with Google</span>
             </a>
-          </div>
         </div>
       </div>
-      <ToastContainer
-        style={{
-          width: "400px",
-          height: "20px",
-        }}
-      />
-    </div>
+     </div>
+    </div> 
   );
 }
 
