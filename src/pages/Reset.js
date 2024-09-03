@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "../Firebase"; 
-import './Login&Signup&reset.css';
+import { auth } from "../Firebase";
+import "./Login&Signup&reset.css";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 function ResetPassword() {
   const [email, setEmail] = useState("");
@@ -28,7 +28,7 @@ function ResetPassword() {
     <div
       style={{
         height: "100vh",
-        backgroundColor: "#4070f4", 
+        backgroundColor: "#4070f4",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -54,7 +54,12 @@ function ResetPassword() {
             </div>
           </form>
           <div className="form-link">
-            <span>Remember your password? <Link to="/Login" className="link login-link">Login</Link></span>
+            <span>
+              Remember your password?{" "}
+              <Link to="/Login" className="link login-link">
+                Login
+              </Link>
+            </span>
           </div>
         </div>
       </div>
@@ -63,4 +68,4 @@ function ResetPassword() {
   );
 }
 
-export default Reset;
+export default ResetPassword;
