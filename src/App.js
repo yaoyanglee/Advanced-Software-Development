@@ -1,19 +1,12 @@
-// import logo from './logo.svg';
 import React, { useState } from "react";
-
-import { Routes, Route } from "react-router-dom";
-
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-
 import Home from "./pages/Home";
-import RegisterProperty from "./pages/RegisterProperty";
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import PropertyList from "./pages/PropertyList";
 import RentPropertyModal from "./pages/RentPropertyModal";
 import SellPropertyModal from "./pages/SellPropertyModal";
 
-// import Banner from "./components/Banner";
-
-function App() {
+const App = () => {
   const [rentModal, setRentModal] = useState(false);
   const [sellModal, setSellModal] = useState(false);
 
@@ -26,26 +19,17 @@ function App() {
   };
 
   return (
-    <div className="max-w-[1440px] mx-auto bg-white ">
-      {/* <h1>Hello world</h1> */}
-      {/* <UploadPropertyModal /> */}
-
-      {/* Uncomment this code to see how we can query the database */}
-      {/* <RegisterProperty /> */}
-
-      {/* Uncomment this code below to get back to the normal functionality */}
-      <Header
+    <>
+      <Navbar
         toggleRentModal={toggleRentModal}
         toggleSellModal={toggleSellModal}
       />
       <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
       <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
-      <Footer />
-    </div>
+      <Home />
+      {/* <PropertyList /> */}
+    </>
   );
-}
+};
 
 export default App;
