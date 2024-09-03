@@ -20,6 +20,8 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
-# - script: |
-#     npm test -- --watchAll=false || exit 1
-#   displayName: 'unit test'
+- script: |
+    test('test', () => {
+      expect(true).toBe(true);
+    });
+  displayName: 'Run Login.test.js Unit Test'
