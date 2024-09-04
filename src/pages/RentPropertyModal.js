@@ -72,8 +72,8 @@ export default function RentPropertyModal({ modal, toggleModal }) {
   const [agentName, setAgentName] = useState("");
   const [price, setPrice] = useState("");
   const [address, setAddress] = useState("");
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+  const [avaDate, setAvaDate] = useState("");
+  const [bond, setBond] = useState("");
 
   // Manages the opening and closing of the snackbar
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -163,10 +163,10 @@ export default function RentPropertyModal({ modal, toggleModal }) {
         price,
         phoneNumber,
         agentName,
-        role,
+        // role,
         propertyType,
-        startDate,
-        endDate,
+        avaDate,
+        // endDate,
       });
       setOpenSnackbar(true);
       // alert("Property uploaded successfully!");
@@ -185,9 +185,15 @@ export default function RentPropertyModal({ modal, toggleModal }) {
       <Dialog open={modal} fullWidth maxWidth="sm">
         <DialogTitle>
           Upload Property for Rent{" "}
-          <IconButton onClick={toggleModal} style={{ float: "right" }}>
-            <CloseIcon></CloseIcon>
-          </IconButton>{" "}
+          <IconButton
+            onClick={toggleModal}
+            style={{
+              position: "absolute",
+              top: "8px",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           <Stack spacing={2} margin={2}>
@@ -289,6 +295,11 @@ export default function RentPropertyModal({ modal, toggleModal }) {
             ></TextField>
             <TextField
               variant="outlined"
+              label="Bond"
+              onChange={(e) => setBond(e.target.value)}
+            ></TextField>
+            <TextField
+              variant="outlined"
               label="Price per Week"
               onChange={(e) => setPrice(e.target.value)}
             ></TextField>
@@ -305,22 +316,9 @@ export default function RentPropertyModal({ modal, toggleModal }) {
 
             <Stack direction="row" spacing={2}>
               <DatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                selectsStart
-                startDate={startDate}
-                endDate={endDate}
-                placeholderText="Select Start Date"
-                className="custom-datepicker"
-              />
-              <DatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                selectsEnd
-                startDate={startDate}
-                endDate={endDate}
-                minDate={startDate}
-                placeholderText="Select End Date"
+                selected={avaDate}
+                onChange={(date) => setAvaDate(date)}
+                placeholderText="Available from"
                 className="custom-datepicker"
               />
             </Stack>
