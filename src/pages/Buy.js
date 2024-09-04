@@ -11,10 +11,25 @@ import {
   Divider,
 } from "@mui/material";
 import Navbar from "../components/Navbar";
+import RentPropertyModal from "./RentPropertyModal";
+import SellPropertyModal from "./SellPropertyModal";
 
 const Buy = () => {
   const db = getFirestore(app);
 
+  //   For the navbar
+  const [rentModal, setRentModal] = useState(false);
+  const [sellModal, setSellModal] = useState(false);
+
+  const toggleRentModal = () => {
+    setRentModal(!rentModal);
+  };
+
+  const toggleSellModal = () => {
+    setSellModal(!sellModal);
+  };
+
+  //   For retrieving houses from firebase
   const [houses, setHouses] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -51,7 +66,12 @@ const Buy = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar
+        toggleRentModal={toggleRentModal}
+        toggleSellModal={toggleSellModal}
+      />
+      <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
+      <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} />
       <Container sx={{ paddingTop: 4 }}>
         <List>
           {houses.map((house) => (
