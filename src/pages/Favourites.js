@@ -6,9 +6,6 @@ import Navbar from "../components/Navbar";
 const Favourites = () => {
   const { favourites, removeFromFavourites } = useFavourites();
 
-  console.log("Favourites Length => ", favourites.length);
-  console.log("Favourites => ", favourites);
-
   if (favourites.length < 1) {
     return (
       <>

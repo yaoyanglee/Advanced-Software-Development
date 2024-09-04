@@ -69,6 +69,11 @@ export default function SellPropertyModal({ modal, toggleModal }) {
   const [agentName, setAgentName] = useState("");
   const [price, setPrice] = useState("");
   const [address, setAddress] = useState("");
+
+  // Edits start here
+  const [avaDate, setAvaDate] = useState("");
+  const [numCarpark, setNumCarpark] = useState("");
+
   // const [coordinates, setCoordinates] = useState({ lat: null, long: null });
 
   // Manages the opening and closing of the snackbar
@@ -137,9 +142,10 @@ export default function SellPropertyModal({ modal, toggleModal }) {
     };
   }, [value, inputValue, fetch]);
 
-  const handleRoleChange = (event) => {
-    setRole(event.target.value);
-  };
+  // Role was removed
+  // const handleRoleChange = (event) => {
+  //   setRole(event.target.value);
+  // };
 
   const handlePropertyTypeChange = (event) => {
     setPropertyType(event.target.value);
@@ -156,10 +162,10 @@ export default function SellPropertyModal({ modal, toggleModal }) {
         address,
         numberOfRooms,
         numberOfBeds,
+        numCarpark,
         price,
         phoneNumber,
         agentName,
-        role,
         propertyType,
       });
       setOpenSnackbar(true);
@@ -178,10 +184,16 @@ export default function SellPropertyModal({ modal, toggleModal }) {
       </Button> */}
       <Dialog open={modal} fullWidth maxWidth="sm">
         <DialogTitle>
-          Upload Property For Sale{" "}
-          <IconButton onClick={toggleModal} style={{ float: "right" }}>
-            <CloseIcon></CloseIcon>
-          </IconButton>{" "}
+          Upload Property for Rent{" "}
+          <IconButton
+            onClick={toggleModal}
+            style={{
+              position: "absolute",
+              top: "8px",
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           <Stack spacing={2} margin={2}>
@@ -296,6 +308,11 @@ export default function SellPropertyModal({ modal, toggleModal }) {
             ></TextField>
             <TextField
               variant="outlined"
+              label="Number of carparks"
+              onChange={(e) => setNumCarpark(e.target.value)}
+            ></TextField>
+            <TextField
+              variant="outlined"
               label="Selling Price"
               onChange={(e) => setPrice(e.target.value)}
             ></TextField>
@@ -310,7 +327,7 @@ export default function SellPropertyModal({ modal, toggleModal }) {
               onChange={(e) => setAgentName(e.target.value)}
             ></TextField>
 
-            <InputLabel id="role-select-label">You are a ...</InputLabel>
+            {/* <InputLabel id="role-select-label">You are a ...</InputLabel>
             <Select
               labelId="role-select-label"
               value={role}
@@ -319,7 +336,7 @@ export default function SellPropertyModal({ modal, toggleModal }) {
             >
               <MenuItem value="landlord">Landlord</MenuItem>
               <MenuItem value="agent">Agent</MenuItem>
-            </Select>
+            </Select> */}
 
             <InputLabel id="prop-type-select-label">This is a ...</InputLabel>
             <Select

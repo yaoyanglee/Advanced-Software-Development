@@ -27,7 +27,7 @@ export const FavouritesProvider = ({ children }) => {
           ...doc.data(),
         }));
         setFavourites(favouritesList);
-        console.log("Fetched favourites:", favouritesList); // Debugging output
+        // console.log("Fetched favourites:", favouritesList); // Debugging output
       } catch (error) {
         console.error("Error fetching favourites:", error);
       }
