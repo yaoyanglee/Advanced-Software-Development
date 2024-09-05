@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../Firebase"; 
-import './Login&Signup&reset.css';
+// import './Login&Signup&Reset.css';
 import googleLogo from '../assets/img/googleIcon.png';
 import { Link } from "react-router-dom";
 import { ToastContainer,toast } from "react-toastify";
@@ -25,7 +25,7 @@ function LogIn() {
       window.location.href = "/";
     } catch (error) {
       console.log(error.message);
-      toast.error(error.message, {
+      toast.error("Invalid emaill or password", {
         position: "top-center",
       });
     }
@@ -47,7 +47,7 @@ function LogIn() {
       }
     } catch (error) {
       console.error(error.message);
-      toast.error(error.message, {
+      toast.error("Invalid emaill or password!", {
         position: "top-center",
       });
     } finally {
@@ -66,7 +66,7 @@ function LogIn() {
       }}
     >
       <div className="form-forms">
-        <Link to="/">Back</Link>
+        <Link to="/">{'<Back'}</Link>
         <div className="form-content">
           <header>Login</header>
           <form onSubmit={handleLogIn}>
@@ -95,7 +95,7 @@ function LogIn() {
               <Link to="/Reset" className="forgot-pass">Forgot password?</Link>
             </div>
             <div className="field button-field">
-              <button type="submit">Login</button>
+              <button type="submit" className="pageButton">Login</button>
               <ToastContainer />
             </div>
           </form>
@@ -105,7 +105,7 @@ function LogIn() {
           <div className="line"></div>
           <div className="media-options">
             <button
-              className="field google"
+              className="field google pageButton"
               onClick={LoginWithGoogle}
               disabled={isGoogleSigningIn}
             >
