@@ -28,6 +28,7 @@ import Typography from "@mui/material/Typography";
 import parse from "autosuggest-highlight/parse";
 import { debounce } from "@mui/material/utils";
 import app from "../Firebase";
+
 import {
   collection,
   query,
@@ -36,6 +37,7 @@ import {
   addDoc,
   getFirestore,
 } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import "./UploadPropertyCss.css";
 
@@ -62,6 +64,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 export default function RentPropertyModal({ modal, toggleModal }) {
   const db = getFirestore(app);
+  const storage = getStorage(app);
 
   const [role, setRole] = useState(""); // State to track selected role
   const [propertyType, setPropertyType] = useState("");
@@ -74,6 +77,7 @@ export default function RentPropertyModal({ modal, toggleModal }) {
   const [address, setAddress] = useState("");
   const [avaDate, setAvaDate] = useState("");
   const [bond, setBond] = useState("");
+  const [images, setImages] = useState([]);
 
   // Manages the opening and closing of the snackbar
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -155,6 +159,18 @@ export default function RentPropertyModal({ modal, toggleModal }) {
 
   const handleSubmit = async () => {
     try {
+      // Upload the images to Firebase Storage and get URLs
+      const uploadedImages = await Promise.all(
+        images.map(async (image) => {
+          console.log("Uploading image: ", image.name);
+          const storageRef = ref(storage, `Rent/${image.name}`);
+          const snapshot = await uploadBytes(storageRef, image);
+          const downloadURL = await getDownloadURL(snapshot.ref); // Return the URL of the uploaded image
+          console.log("Download URL => ", downloadURL);
+          return downloadURL;
+        })
+      );
+
       await addDoc(collection(db, "Rent"), {
         propertyName,
         address,
@@ -163,10 +179,10 @@ export default function RentPropertyModal({ modal, toggleModal }) {
         price,
         phoneNumber,
         agentName,
-        // role,
+        bond,
         propertyType,
         avaDate,
-        // endDate,
+        images: uploadedImages,
       });
       setOpenSnackbar(true);
       // alert("Property uploaded successfully!");
@@ -293,6 +309,12 @@ export default function RentPropertyModal({ modal, toggleModal }) {
               label="Number of beds"
               onChange={(e) => setNumberOfBeds(e.target.value)}
             ></TextField>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={(e) => setImages(Array.from(e.target.files))}
+            />
             <TextField
               variant="outlined"
               label="Bond"

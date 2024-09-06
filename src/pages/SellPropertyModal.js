@@ -35,6 +35,7 @@ import {
   addDoc,
   getFirestore,
 } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyA7qPVACs1MeMVb_ELlxGABCGJgZx7t0S4";
 
@@ -59,6 +60,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 export default function SellPropertyModal({ modal, toggleModal }) {
   const db = getFirestore(app);
+  const storage = getStorage(app);
 
   const [role, setRole] = useState(""); // State to track selected role
   const [propertyType, setPropertyType] = useState("");
@@ -69,6 +71,7 @@ export default function SellPropertyModal({ modal, toggleModal }) {
   const [agentName, setAgentName] = useState("");
   const [price, setPrice] = useState("");
   const [address, setAddress] = useState("");
+  const [images, setImages] = useState([]);
 
   // Edits start here
   const [avaDate, setAvaDate] = useState("");
@@ -157,6 +160,18 @@ export default function SellPropertyModal({ modal, toggleModal }) {
 
   const handleSubmit = async () => {
     try {
+      // Upload the images to Firebase Storage and get URLs
+      const uploadedImages = await Promise.all(
+        images.map(async (image) => {
+          console.log("Uploading image: ", image.name);
+          const storageRef = ref(storage, `Rent/${image.name}`);
+          const snapshot = await uploadBytes(storageRef, image);
+          const downloadURL = await getDownloadURL(snapshot.ref); // Return the URL of the uploaded image
+          console.log("Download URL => ", downloadURL);
+          return downloadURL;
+        })
+      );
+
       await addDoc(collection(db, "Sell"), {
         propertyName,
         address,
@@ -167,6 +182,7 @@ export default function SellPropertyModal({ modal, toggleModal }) {
         phoneNumber,
         agentName,
         propertyType,
+        images: uploadedImages,
       });
       setOpenSnackbar(true);
       // alert("Property uploaded successfully!");
@@ -306,6 +322,12 @@ export default function SellPropertyModal({ modal, toggleModal }) {
               label="Number of beds"
               onChange={(e) => setNumberOfBeds(e.target.value)}
             ></TextField>
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={(e) => setImages(Array.from(e.target.files))}
+            />
             <TextField
               variant="outlined"
               label="Number of carparks"
