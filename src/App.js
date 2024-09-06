@@ -15,6 +15,17 @@ import Buy from "./pages/Buy.js";
 // import Banner from "./components/Banner";
 
 function App() {
+  const [rentModal, setRentModal] = useState(false);
+  const [sellModal, setSellModal] = useState(false);
+
+  const toggleRentModal = () => {
+    setRentModal(!rentModal);
+  };
+
+  const toggleSellModal = () => {
+    setSellModal(!sellModal);
+  };
+
   return (
     <>
       <Routes>

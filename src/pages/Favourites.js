@@ -1,15 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFavourites } from "../contexts/FavouritesContext";
 import House from "../components/House";
 import Navbar from "../components/Navbar";
+import RentPropertyModal from "./RentPropertyModal";
+import SellPropertyModal from "./SellPropertyModal";
 
 const Favourites = () => {
+  // Logic for navbar
+  const [rentModal, setRentModal] = useState(false);
+  const [sellModal, setSellModal] = useState(false);
+
+  const toggleRentModal = () => {
+    setRentModal(!rentModal);
+  };
+
+  const toggleSellModal = () => {
+    setSellModal(!sellModal);
+  };
+
+  // For favourites
   const { favourites, removeFromFavourites } = useFavourites();
 
   if (favourites.length < 1) {
     return (
       <>
-        <Navbar />
+        <Navbar
+          toggleRentModal={toggleRentModal}
+          toggleSellModal={toggleSellModal}
+        />
+        <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
+        <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} />
         <div>No favorite properties yet.</div>;
       </>
     );
@@ -17,7 +37,12 @@ const Favourites = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar
+        toggleRentModal={toggleRentModal}
+        toggleSellModal={toggleSellModal}
+      />
+      <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
+      <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} />
 
       <section className="mb-20">
         <div className="container mx-auto max-w-[1100px]">
