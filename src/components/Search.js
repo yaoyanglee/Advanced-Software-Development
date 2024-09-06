@@ -19,12 +19,13 @@ const Search = () => {
           Search properties to rent
         </h1>
       </div>
+      <br></br>
       <div className="px-[20px] py-1 max-w-[1200px] mx-auto flex flex-col lg:flex-row justify-between gap-3 lg:gap-x-3 relative  lg:bg-white rounded-lg">
-        {/* <CountryDropdown/>
-        <DateDropdown/>
+        <CountryDropdown/>
+        {/* <DateDropdown/>
         <PriceRangeDropdown/>
-        <PropertyDropdown /> */}
-        <SearchBox />
+        <PropertyDropdown />
+        <SearchBox /> */}
         <button
           onClick={() => {
             handleClick();

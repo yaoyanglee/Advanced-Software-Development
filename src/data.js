@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import Firebase from '../Firebase'; // Ensure this path is correct
+import Firebase from './Firebase'; // Ensure this path is correct
 import {
   collection,
   query,
@@ -34,7 +34,7 @@ const useHousesData = () => {
 
     fetchData();
   }, [db]);
-
+  //console.log(houses);
   return { houses, loading, error };
 };
 
