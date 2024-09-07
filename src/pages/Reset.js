@@ -2,19 +2,21 @@ import React, { useState } from "react";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../Firebase";
 import "./Login&Signup&reset.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function ResetPassword() {
+function Reset() {
   const [email, setEmail] = useState("");
-
+  const navigate = useNavigate();
   const handleResetPassword = async (e) => {
     e.preventDefault();
     try {
       await sendPasswordResetEmail(auth, email);
       toast.success("Password reset email sent!", {
         position: "top-center",
+        autoClose: 5000,
+        onClose: () => navigate("/Login"),
       });
     } catch (error) {
       console.error(error.message);
@@ -35,7 +37,7 @@ function ResetPassword() {
       }}
     >
       <div className="form-forms">
-        <Link to="/">Back</Link>
+        <Link to="/">{"<Back"}</Link>
         <div className="form-content">
           <header>Reset Password</header>
           <form onSubmit={handleResetPassword}>
@@ -50,7 +52,9 @@ function ResetPassword() {
               />
             </div>
             <div className="field button-field">
-              <button type="submit">Reset</button>
+              <button type="submit" className="pageButton">
+                Reset
+              </button>
             </div>
           </form>
           <div className="form-link">
@@ -68,4 +72,4 @@ function ResetPassword() {
   );
 }
 
-export default ResetPassword;
+export default Reset;
