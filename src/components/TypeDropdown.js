@@ -6,8 +6,8 @@ import {Menu} from '@headlessui/react';
 
 import {HouseContext} from './HouseContext';
 
-const PropertyDropdown = () => {
-  const {property, setProperty, properties}  = useContext(HouseContext);
+const TypeDropdown = () => {
+  const {type, setType, types}  = useContext(HouseContext);
    
   const [isOpen, setIsOpen] = useState(false);
 
@@ -16,7 +16,7 @@ const PropertyDropdown = () => {
       <Menu.Button onClick={() => {setIsOpen(!isOpen)}} className="dropdown-btn w-full text-left  hover:bg-violet-400 hover:rounded-lg hover:text-white">
         <RiHome5Line className=' dropdown-icon-primary hover:text-white' />
         <div >
-          <div className='text-[15px] font-medium leading-tight'>{property}</div>
+          <div className='text-[15px] font-medium leading-tight'>{type}</div>
           <div className='text-[13px]'>Select property type</div>          
         </div>
           { isOpen? (
@@ -27,17 +27,26 @@ const PropertyDropdown = () => {
           }
       </Menu.Button>
       <Menu.Items className='dropdown-menu'>
-        {properties.map((property, index) => {
+        {types.map((availableType, index) => {
           return(
-            <Menu.Item onClick={() => {setProperty(property)}} className="cursor-pointer hover:text-violet-700 transition" as='li' key={index}>
-              {property}
+            <Menu.Item
+              onClick={() => {
+                setType(availableType); 
+                setIsOpen(false);
+              }}
+              className={`cursor-pointer hover:text-violet-700 transition ${
+                availableType === type ? "font-bold text-violet-700" : "" 
+              }`}
+              as="li"
+              key={index}
+            >
+              {availableType}
             </Menu.Item>
-          )
+          );
         })}
       </Menu.Items>
     </Menu>
-    // <div>PropertyDropdown</div>
   )
 }
 
-export default PropertyDropdown;
+export default TypeDropdown;

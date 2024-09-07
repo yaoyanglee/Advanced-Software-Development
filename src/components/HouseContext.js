@@ -1,89 +1,78 @@
 import React, { useState, useEffect, createContext } from "react";
-import { housesData } from "../data";
+import data from "../data"; // Ensure this path is correct
 
 // Create the HouseContext
 export const HouseContext = createContext();
 
 // HouseContextProvider component
 const HouseContextProvider = ({ children }) => {
-  const [houses, setHouses] = useState(housesData);
-  const [country, setCountry] = useState("Location (any)");
-  const [countries, setCountries] = useState([]);
-  const [property, setProperty] = useState("Property (any)");
-  const [properties, setProperties] = useState([]);
-  const [price, setPrice] = useState("Price range (any)");
-  const [startDate, setStartDate] = useState("Rent Date (any)");
+  const { houses: fetchedHouses, loading: dataLoading, error } = data(); // Custom hook to fetch data
+  const [houses, setHouses] = useState([]);
+  const [filteredHouses, setFilteredHouses] = useState([]); // New state for filtered houses
+  const [city, setCity] = useState();
+  const [cities, setCities] = useState([]);
+  const [type, setType] = useState();
+  const [types, setTypes] = useState([]);
+  // const [price, setPrice] = useState("Price range (any)");
+  // const [startDate, setStartDate] = useState("Rent Date (any)");
   const [loading, setLoading] = useState(false);
 
-  // Fetch countries based on available houses
+  // Update houses state when fetched data changes
   useEffect(() => {
-    const allCountries = houses.map((house) => house.country);
-    const uniqueCountries = ["Location (any)", ...new Set(allCountries)];
-    setCountries(uniqueCountries);
+    if (fetchedHouses) {
+      setHouses(fetchedHouses);
+      setFilteredHouses(fetchedHouses); // Initialize with all houses
+    }
+  }, [fetchedHouses]);
+
+  //cities
+  useEffect(() => {
+    const allCities = houses.map((house) => house.city);
+    const uniqueCities = ["City (any)", ...new Set(allCities)];
+    setCities(uniqueCities);
   }, [houses]);
 
-  // Fetch property types based on available houses
+  // Property types
   useEffect(() => {
-    const allProperties = houses.map((house) => house.type);
-    const uniqueProperties = ["Property (any)", ...new Set(allProperties)];
-    setProperties(uniqueProperties);
+    const allTypes = houses.map((house) => house.propertyType);
+    const uniqueTypes = ["Property Type (any)", ...new Set(allTypes)];
+    setTypes(uniqueTypes);
   }, [houses]);
-
+  console.log(houses);
   const handleClick = () => {
     setLoading(true);
 
-    const isDefault = (str) => str.split(" ").includes("(any)");
+    // const isDefault = (str) => str.split(" ").includes("(any)");
 
-    const minPrice = parseInt(price.split(" ")[0]);
-    const maxPrice = parseInt(price.split(" ")[2]);
-    const dateSelected = parseInt(startDate);
+    // const minPrice = parseInt(price.split(" ")[0]);
+    // const maxPrice = parseInt(price.split(" ")[2]);
+    // const dateSelected = parseInt(startDate);
 
-    const newHouses = housesData.filter((house) => {
-      const housePrice = parseInt(house.price);
-      const houseAvailableDate = parseInt(house.date);
+    const newHouses = houses.filter((house) => {
+      // const housePrice = parseInt(house.price);
+      // const houseAvailableDate = parseInt(house.date);
 
-      if (
-        house.country === country &&
-        house.type === property &&
-        housePrice >= minPrice &&
-        housePrice <= maxPrice &&
-        houseAvailableDate >= dateSelected
-      ) {
-        return house;
+      // Case 1: Both city and type are specified (not "any")
+      if (city !== "City (any)" && type !== "Property Type (any)") {
+        return house.city === city && house.propertyType === type;
       }
-
-      if (
-        isDefault(country) &&
-        isDefault(property) &&
-        isDefault(price) &&
-        isDefault(startDate)
-      ) {
-        return house;
+      // Case 2: City is specified, type is "any"
+      else if (city !== "City (any)" && type === "Property Type (any)") {
+        return house.city === city;
       }
-
-      if (!isDefault(country) && isDefault(property) && isDefault(price) && isDefault(startDate)) {
-        return house.country === country;
+      // Case 3: Type is specified, city is "any"
+      else if (city === "City (any)" && type !== "Property Type (any)") {
+        return house.propertyType === type;
       }
-
-      if (!isDefault(property) && isDefault(country) && isDefault(price) && isDefault(startDate)) {
-        return house.type === property;
+      // Case 4: Both city and type are "any"
+      else if (city === "City (any)" && type === "Property Type (any)") {
+        return true; // Show all houses
       }
-
-      if (!isDefault(price) && isDefault(country) && isDefault(property) && isDefault(startDate)) {
-        if (house.price >= minPrice && house.price <= maxPrice) {
-          return house;
-        }
-      }
-
-      if (!isDefault(startDate) && isDefault(country) && isDefault(property) && isDefault(price)) {
-        if (houseAvailableDate >= dateSelected) {
-          return house;
-        }
-      }
+      return false; // Default return value if no conditions are met
     });
 
     setTimeout(() => {
-      setHouses(newHouses.length < 1 ? [] : newHouses);
+      setFilteredHouses(newHouses);
       setLoading(false);
     }, 1000);
   };
@@ -91,22 +80,22 @@ const HouseContextProvider = ({ children }) => {
   return (
     <HouseContext.Provider
       value={{
-        country,
-        setCountry,
-        countries,
-        property,
-        setProperty,
-        properties,
-        price,
-        setPrice,
-        startDate,
-        setStartDate,
-        houses,
+        city,
+        setCity,
+        cities,
+        type,
+        setType,
+        types,
+        // price,
+        // setPrice,
+        // startDate,
+        // setStartDate,
+        houses: filteredHouses,
         loading,
         handleClick,
       }}
     >
-      {children}
+      {error ? <div>Error loading data</div> : children}
     </HouseContext.Provider>
   );
 };

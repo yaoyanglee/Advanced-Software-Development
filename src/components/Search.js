@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import CountryDropdown from "./CountryDropdown";
+import CityDropdown from "./CityDropdown";
 import DateDropdown from "./DateDropdown";
 import PriceRangeDropdown from "./PriceRangeDropdown";
-import PropertyDropdown from "./PropertyDropdown";
+import TypeDropdown from "./TypeDropdown";
 
 import { RiSearch2Line } from "react-icons/ri";
 
@@ -19,12 +19,13 @@ const Search = () => {
           Search properties to rent
         </h1>
       </div>
+      <br></br>
       <div className="px-[20px] py-1 max-w-[1200px] mx-auto flex flex-col lg:flex-row justify-between gap-3 lg:gap-x-3 relative  lg:bg-white rounded-lg">
-        {/* <CountryDropdown/>
-        <DateDropdown/>
+        <CityDropdown/>
+        <TypeDropdown />
+        {/* <DateDropdown/>
         <PriceRangeDropdown/>
-        <PropertyDropdown /> */}
-        <SearchBox />
+        <SearchBox /> */}
         <button
           onClick={() => {
             handleClick();
