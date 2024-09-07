@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useFavourites } from "../contexts/FavouritesContext";
-import House from "../components/House";
+import House from "../../../House";
 import Navbar from "../components/Navbar";
 import RentPropertyModal from "./RentPropertyModal";
 import SellPropertyModal from "./SellPropertyModal";
