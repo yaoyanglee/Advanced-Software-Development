@@ -6,7 +6,7 @@ import {Menu} from '@headlessui/react';
 
 import {HouseContext} from './HouseContext';
 
-const CountryDropdown = () => {
+const CityDropdown = () => {
   const {city, setCity, cities}  = useContext(HouseContext);
   console.log(city);
   const [isOpen, setIsOpen] = useState(false);
@@ -50,8 +50,7 @@ const CountryDropdown = () => {
         })}
       </Menu.Items>
     </Menu>
-    // <div>CountryDropdown</div>
   )
 }
 
-export default CountryDropdown;
+export default CityDropdown;

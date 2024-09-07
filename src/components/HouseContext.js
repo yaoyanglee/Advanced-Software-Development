@@ -7,10 +7,10 @@ const HouseContextProvider = ({ children }) => {
   const { houses: fetchedHouses, loading: dataLoading, error } = data(); // Custom hook to fetch data
   const [houses, setHouses] = useState([]);
   const [filteredHouses, setFilteredHouses] = useState([]); // New state for filtered houses
-  const [city, setCity] = useState("City (any)");
+  const [city, setCity] = useState();
   const [cities, setCities] = useState([]);
-  // const [property, setProperty] = useState("Property (any)");
-  // const [properties, setProperties] = useState([]);
+  const [type, setType] = useState();
+  const [types, setTypes] = useState([]);
   // const [price, setPrice] = useState("Price range (any)");
   // const [startDate, setStartDate] = useState("Rent Date (any)");
   const [loading, setLoading] = useState(false);
@@ -30,12 +30,12 @@ const HouseContextProvider = ({ children }) => {
     setCities(uniqueCities);
   }, [houses]);
 
-  // // Properties
-  // useEffect(() => {
-  //   const allProperties = houses.map((house) => house.type);
-  //   const uniqueProperties = ["Property (any)", ...new Set(allProperties)];
-  //   setProperties(uniqueProperties);
-  // }, [houses]);
+  // Property types
+  useEffect(() => {
+    const allTypes = houses.map((house) => house.propertyType);
+    const uniqueTypes = ["Property Type (any)", ...new Set(allTypes)];
+    setTypes(uniqueTypes);
+  }, [houses]);
   console.log(houses);
   const handleClick = () => {
     setLoading(true);
@@ -50,62 +50,26 @@ const HouseContextProvider = ({ children }) => {
       // const housePrice = parseInt(house.price);
       // const houseAvailableDate = parseInt(house.date);
 
-      if (city === "City (any)") {
-        // If "City (any)" is selected, return all houses
-        return true;
-      } else if (house.city === city) {
-        // If a specific city is selected, filter by that city
-        return house;
+       // Case 1: Both city and type are specified (not "any")
+       if (city !== "City (any)" && type !== "Property Type (any)") {
+        return house.city === city && house.propertyType === type;
       }
-
-    //   if (
-    //     isDefault(city) &&
-    //     isDefault(property) &&
-    //     isDefault(price) &&
-    //     isDefault(startDate)
-    //   ) {
-    //     return house;
-    //   }
-
-    //   if (
-    //     !isDefault(city) &&
-    //     isDefault(property) &&
-    //     isDefault(price) &&
-    //     isDefault(startDate)
-    //   ) {
-    //     return house.city === city;
-    //   }
-
-    //   if (
-    //     !isDefault(property) &&
-    //     isDefault(city) &&
-    //     isDefault(price) &&
-    //     isDefault(startDate)
-    //   ) {
-    //     return house.type === property;
-    //   }
-
-    //   if (
-    //     !isDefault(price) &&
-    //     isDefault(city) &&
-    //     isDefault(property) &&
-    //     isDefault(startDate)
-    //   ) {
-    //     return housePrice >= minPrice && housePrice <= maxPrice;
-    //   }
-
-    //   if (
-    //     !isDefault(startDate) &&
-    //     isDefault(city) &&
-    //     isDefault(property) &&
-    //     isDefault(price)
-    //   ) {
-    //     return houseAvailableDate >= dateSelected;
-    //   }
+      // Case 2: City is specified, type is "any"
+      else if (city !== "City (any)" && type === "Property Type (any)") {
+        return house.city === city;
+      }
+      // Case 3: Type is specified, city is "any"
+      else if (city === "City (any)" && type !== "Property Type (any)") {
+        return house.propertyType === type;
+      }
+      // Case 4: Both city and type are "any"
+      else if (city === "City (any)" && type === "Property Type (any)") {
+        return true; // Show all houses
+      }
+      return false; // Default return value if no conditions are met
     });
 
     setTimeout(() => {
-      // setHouses(newHouses.length < 1 ? [] : newHouses);
       setFilteredHouses(newHouses);
       setLoading(false);
     }, 1000);
@@ -117,9 +81,9 @@ const HouseContextProvider = ({ children }) => {
         city,
         setCity,
         cities,
-        // property,
-        // setProperty,
-        // properties,
+        type,
+        setType,
+        types,
         // price,
         // setPrice,
         // startDate,

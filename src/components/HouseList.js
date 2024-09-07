@@ -29,7 +29,8 @@ const HouseList = () => {
                   <div className="flex justify-between items-center px-3">
                     <div className="text-lg text-violet-600 mb-4 font-bold pl-2">
                         {house.propertyName}
-                      {/* ${house.price} */}
+                        <br></br>
+                        ${house.price} {house.RoS === "Rent" ? "/pw" : ""}
                       <span className="text-gray-500 font-light text-sm">
                       </span>
                     </div>
@@ -51,7 +52,7 @@ const HouseList = () => {
                       <div className="text-[20px] text-violet-700">
                         <BiBath />
                       </div>
-                      <div>{house.numberOfBeds}</div>
+                      <div>{house.numberOfBath}</div>
                     </div>
                     <div className="flex items-center gap-1">
                       {/* Add more info like surface area if needed */}
