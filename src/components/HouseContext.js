@@ -6,6 +6,7 @@ export const HouseContext = createContext();
 const HouseContextProvider = ({ children }) => {
   const { houses: fetchedHouses, loading: dataLoading, error } = data(); // Custom hook to fetch data
   const [houses, setHouses] = useState([]);
+  const [filteredHouses, setFilteredHouses] = useState([]); // New state for filtered houses
   const [city, setCity] = useState("City (any)");
   const [cities, setCities] = useState([]);
   // const [property, setProperty] = useState("Property (any)");
@@ -18,13 +19,14 @@ const HouseContextProvider = ({ children }) => {
   useEffect(() => {
     if (fetchedHouses) {
       setHouses(fetchedHouses);
+      setFilteredHouses(fetchedHouses); // Initialize with all houses
     }
   }, [fetchedHouses]);
 
   //cities
   useEffect(() => {
     const allCities = houses.map((house) => house.city);
-    const uniqueCities = ["Location (any)", ...new Set(allCities)];
+    const uniqueCities = ["City (any)", ...new Set(allCities)];
     setCities(uniqueCities);
   }, [houses]);
 
@@ -48,13 +50,11 @@ const HouseContextProvider = ({ children }) => {
       // const housePrice = parseInt(house.price);
       // const houseAvailableDate = parseInt(house.date);
 
-      if (
-        house.city === city 
-        // house.type === property &&
-        // housePrice >= minPrice &&
-        // housePrice <= maxPrice &&
-        // houseAvailableDate >= dateSelected
-      ) {
+      if (city === "City (any)") {
+        // If "City (any)" is selected, return all houses
+        return true;
+      } else if (house.city === city) {
+        // If a specific city is selected, filter by that city
         return house;
       }
 
@@ -105,7 +105,8 @@ const HouseContextProvider = ({ children }) => {
     });
 
     setTimeout(() => {
-      setHouses(newHouses.length < 1 ? [] : newHouses);
+      // setHouses(newHouses.length < 1 ? [] : newHouses);
+      setFilteredHouses(newHouses);
       setLoading(false);
     }, 1000);
   };
@@ -123,7 +124,7 @@ const HouseContextProvider = ({ children }) => {
         // setPrice,
         // startDate,
         // setStartDate,
-        houses,
+        houses: filteredHouses,
         loading,
         handleClick,
       }}
