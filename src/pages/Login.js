@@ -1,12 +1,16 @@
 import React, { useState } from "react";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth, db } from "../Firebase"; 
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import { auth, db } from "../Firebase";
 import { doc, getDoc } from "firebase/firestore";
-import './Login&Signup&Reset.css';
-import googleLogo from '../assets/img/googleIcon.png';
+import "./Login&Signup&reset.css";
+import googleLogo from "../assets/img/googleIcon.png";
 import { Link } from "react-router-dom";
-import { ToastContainer,toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function LogIn() {
   // const auth = getAuth(app);
@@ -81,7 +85,7 @@ function LogIn() {
       }}
     >
       <div className="form-forms">
-        <Link to="/">{'<Back'}</Link>
+        <Link to="/">{"<Back"}</Link>
         <div className="form-content">
           <header>Login</header>
           <form onSubmit={handleLogIn}>
@@ -107,15 +111,24 @@ function LogIn() {
               <i className="bx bx-hide eye-icon"></i>
             </div>
             <div className="form-link">
-              <Link to="/Reset" className="forgot-pass">Forgot password?</Link>
+              <Link to="/Reset" className="forgot-pass">
+                Forgot password?
+              </Link>
             </div>
             <div className="field button-field">
-              <button type="submit" className="pageButton">Login</button>
+              <button type="submit" className="pageButton">
+                Login
+              </button>
               <ToastContainer />
             </div>
           </form>
           <div className="form-link">
-            <span>Don't have an account? <Link to="/Signup" className="link signup-link">Signup</Link></span>
+            <span>
+              Don't have an account?{" "}
+              <Link to="/Signup" className="link signup-link">
+                Signup
+              </Link>
+            </span>
           </div>
           <div className="line"></div>
           <div className="media-options">

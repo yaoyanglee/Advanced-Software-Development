@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../Firebase";
 import { setDoc, doc } from "firebase/firestore";
-import "./Login&Signup&Reset.css";
+import "./Login&Signup&reset.css";
 import googleLogo from "../assets/img/googleIcon.png";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -193,10 +193,14 @@ function SignUp() {
                 className="field google pageButton"
                 disabled={isGoogleSigningIn}
               >
-                <img src={googleLogo} alt="Google Icon" className="google-img" />
+                <img
+                  src={googleLogo}
+                  alt="Google Icon"
+                  className="google-img"
+                />
                 <span>Sign up with Google</span>
               </button>
-            </Link> 
+            </Link>
           </div>
         </div>
       </div>

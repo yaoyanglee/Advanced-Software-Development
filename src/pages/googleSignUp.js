@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { auth, db } from "../Firebase"; 
-import { setDoc, doc } from "firebase/firestore"; 
-import './Login&Signup&Reset.css';
+import { auth, db } from "../Firebase";
+import { setDoc, doc } from "firebase/firestore";
+import "./Login&Signup&reset.css";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 function GoogleSignUp() {
   const [name, setName] = useState("");
@@ -18,37 +18,36 @@ function GoogleSignUp() {
     e.preventDefault();
     if (isGoogleSigningIn) return;
     setIsGoogleSigningIn(true);
-  
+
     try {
-          const provider = new GoogleAuthProvider();
-          const result = await signInWithPopup(auth, provider);
-          // Get user details from Google auth result
-          const user = result.user;
-          const googleEmail = user.email; 
-          const userId = user.uid;
-          // Save user info to Firestore
-          await setDoc(doc(db, "Users", userId), {
-            Emial: googleEmail,
-            Name: name,
-            PhoneNum: phone,
-            Status: status,
-          });
-  
-          // Show success message and navigate to login
-          toast.success("Signed up successfully!", {
-            position: "top-center",
-            autoClose: 3000,
-            onClose: () => navigate("/Login")
-          });
-        } catch (error) {
-          toast.error("Invalid access code!", { position: "top-center" });
-          setIsGoogleSigningIn(false);
-          return;
-        } finally {
-        setIsGoogleSigningIn(false);
-       }
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      // Get user details from Google auth result
+      const user = result.user;
+      const googleEmail = user.email;
+      const userId = user.uid;
+      // Save user info to Firestore
+      await setDoc(doc(db, "Users", userId), {
+        Emial: googleEmail,
+        Name: name,
+        PhoneNum: phone,
+        Status: status,
+      });
+
+      // Show success message and navigate to login
+      toast.success("Signed up successfully!", {
+        position: "top-center",
+        autoClose: 3000,
+        onClose: () => navigate("/Login"),
+      });
+    } catch (error) {
+      toast.error("Invalid access code!", { position: "top-center" });
+      setIsGoogleSigningIn(false);
+      return;
+    } finally {
+      setIsGoogleSigningIn(false);
+    }
   };
-  
 
   return (
     <div
