@@ -5362,6 +5362,11 @@ debug@2.6.9:
   dependencies:
     ms "2.0.0"
 
+decimal-format@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.npmjs.org/decimal-format/-/decimal-format-3.0.1.tgz"
+  integrity sha512-L07urvPTg4RoTTAMsbZlVPdGoQKeQRLukLovp/6aTufiwGnVHY4Q6L4hELAFAWnh6zT0dZpZGXU/oSrli+SG9w==
+
 decimal.js@^10.2.1:
   version "10.4.3"
   resolved "https://registry.npmjs.org/decimal.js/-/decimal.js-10.4.3.tgz"

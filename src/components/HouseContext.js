@@ -13,8 +13,9 @@ const HouseContextProvider = ({ children }) => {
   const [cities, setCities] = useState([]);
   const [type, setType] = useState();
   const [types, setTypes] = useState([]);
-  // const [price, setPrice] = useState("Price range (any)");
-  // const [startDate, setStartDate] = useState("Rent Date (any)");
+  const [RoS, setRoS] = useState();
+  const [RoSs, setRoSs] = useState([]);
+  const [price, setPrice] = useState("Price range (any)");
   const [loading, setLoading] = useState(false);
 
   // Update houses state when fetched data changes
@@ -38,37 +39,72 @@ const HouseContextProvider = ({ children }) => {
     const uniqueTypes = ["Property Type (any)", ...new Set(allTypes)];
     setTypes(uniqueTypes);
   }, [houses]);
+
+  //Rent or Sell
+  useEffect(() => {
+    const allRoSs = houses.map((house) => house.RoS);
+    const uniqueRoSs = ["Rent or Sell (any)", ...new Set(allRoSs)];
+    setRoSs(uniqueRoSs);
+  }, [houses]);
+
   console.log(houses);
   const handleClick = () => {
     setLoading(true);
 
-    // const isDefault = (str) => str.split(" ").includes("(any)");
+    // Function to parse the price range
+    const parsePriceRange = (priceRange) => {
+      const [min, max] = priceRange.split(" - ").map((p) => parseInt(p));
+      return { min: min || 0, max: max || Infinity }; // Default to full range if "Price range (any)"
+    };
 
-    // const minPrice = parseInt(price.split(" ")[0]);
-    // const maxPrice = parseInt(price.split(" ")[2]);
-    // const dateSelected = parseInt(startDate);
+    // Only parse the price if it's not "Price range (any)"
+    const { min: minPrice, max: maxPrice } = price !== "Price range (any)" ? parsePriceRange(price) : { min: 0, max: Infinity };
 
     const newHouses = houses.filter((house) => {
-      // const housePrice = parseInt(house.price);
-      // const houseAvailableDate = parseInt(house.date);
+      const housePrice = parseInt(house.price);
 
       // Case 1: Both city and type are specified (not "any")
       if (city !== "City (any)" && type !== "Property Type (any)") {
-        return house.city === city && house.propertyType === type;
+        return (
+          house.city === city &&
+          house.propertyType === type &&
+          housePrice >= minPrice &&
+          housePrice <= maxPrice &&
+          (RoS === "Rent or Sell (any)" || house.RoS === RoS) 
+        );
       }
       // Case 2: City is specified, type is "any"
       else if (city !== "City (any)" && type === "Property Type (any)") {
-        return house.city === city;
+        return (
+          house.city === city &&
+          housePrice >= minPrice &&
+          housePrice <= maxPrice &&
+          (RoS === "Rent or Sell (any)" || house.RoS === RoS) 
+        );
       }
       // Case 3: Type is specified, city is "any"
       else if (city === "City (any)" && type !== "Property Type (any)") {
-        return house.propertyType === type;
+        return (
+          house.propertyType === type &&
+          housePrice >= minPrice &&
+          housePrice <= maxPrice &&
+          (RoS === "Rent or Sell (any)" || house.RoS === RoS) 
+        );
       }
       // Case 4: Both city and type are "any"
       else if (city === "City (any)" && type === "Property Type (any)") {
-        return true; // Show all houses
+        return (
+          housePrice >= minPrice &&
+          housePrice <= maxPrice &&
+          (RoS === "Rent or Sell (any)" || house.RoS === RoS) 
+        ); // Show all houses within the price range
       }
-      return false; // Default return value if no conditions are met
+      // Case 5: RoS is specified, others are "any"
+      else if (city === "City (any)" && type === "Property Type (any)" && RoS !== "Rent or Sell (any)") {
+        return house.RoS === RoS && housePrice >= minPrice && housePrice <= maxPrice;
+      }
+
+      return false; // Default return value if no conditions are met.
     });
 
     setTimeout(() => {
@@ -86,10 +122,11 @@ const HouseContextProvider = ({ children }) => {
         type,
         setType,
         types,
-        // price,
-        // setPrice,
-        // startDate,
-        // setStartDate,
+        price,
+        setPrice,
+        RoS,
+        setRoS,
+        RoSs,
         houses: filteredHouses,
         loading,
         handleClick,
