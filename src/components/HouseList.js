@@ -1,15 +1,20 @@
 import React, { useContext } from "react";
 import { HouseContext } from "./HouseContext";
 import { BiBed, BiBath, BiArea } from "react-icons/bi";
-import { RiHeart3Line } from "react-icons/ri";
+import { RiHeart3Line, RiHeart3Fill } from "react-icons/ri"; // Import both outline and filled heart icons
 import { Link } from "react-router-dom";
 import { ImSpinner2 } from "react-icons/im";
-import DecimalFormat from 'decimal-format';
+import DecimalFormat from "decimal-format";
+import { useFavourites } from "../contexts/FavouritesContext"; // Import the useFavourites hook
 
 const HouseList = () => {
   const { houses, loading } = useContext(HouseContext);
-  const df = new DecimalFormat('#,###,###,###,###');
-  console.log(houses);
+  const { addToFavourites, isInFavourites } = useFavourites(); // Destructure needed functions from useFavourites
+  const df = new DecimalFormat("#,###,###,###,###");
+
+  const handleAddToFavourites = (house) => {
+    addToFavourites(house);
+  };
 
   if (loading) {
     return (
@@ -20,6 +25,7 @@ const HouseList = () => {
   if (houses.length < 1) {
     return <div>Sorry, no match found!</div>;
   }
+
   return (
     <section className="mb-20">
       <div className="container mx-auto max-w-[1100px]">
@@ -31,17 +37,33 @@ const HouseList = () => {
                   <div className="flex justify-between items-center px-3">
                     <div className="text-lg text-violet-600 mb-4 font-bold pl-2">
                       {house.propertyName}
-                      <br></br>${df.format(house.price)}{" "}
+                      <br />${df.format(house.price)}{" "}
                       {house.RoS === "Rent" ? "/pw" : ""}
                       <span className="text-gray-500 font-light text-sm"></span>
                     </div>
-                    <RiHeart3Line className="text-3xl hover:text-red-500" />
+                    {isInFavourites(house.id) ? (
+                      <RiHeart3Fill
+                        className="text-3xl text-red-500 hover:text-red-600"
+                        onClick={(e) => {
+                          e.preventDefault(); // Prevents the Link from being triggered
+                          handleAddToFavourites(house);
+                        }}
+                      />
+                    ) : (
+                      <RiHeart3Line
+                        className="text-3xl hover:text-red-500"
+                        onClick={(e) => {
+                          e.preventDefault(); // Prevents the Link from being triggered
+                          handleAddToFavourites(house);
+                        }}
+                      />
+                    )}
                   </div>
                   <div className="flex gap-x-2">
                     <div className="border-r-2 pr-2">{house.propertyType}</div>
                     <div className="text-gray-900 font-bold">{house.city}</div>
                   </div>
-                  <div className="text-xs max-w-[260]">
+                  <div className="text-xs max-w-[260px]">
                     {house.address.description}
                   </div>
                   <div className="flex justify-around my-1 p-1 border-t-2">
