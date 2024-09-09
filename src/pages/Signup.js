@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../Firebase";
 import { setDoc, doc } from "firebase/firestore";
-import "./Login&Signup&reset.css";
+import "./Login&Signup&Reset.css";
 import googleLogo from "../assets/img/googleIcon.png";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -52,29 +52,29 @@ function SignUp() {
     }
   };
 
-  const LoginWithGoogle = async () => {
-    if (isGoogleSigningIn) return; // Prevent multiple popup requests
-    setIsGoogleSigningIn(true); // Set flag to indicate the request is in progress
+  // const LoginWithGoogle = async () => {
+  //   if (isGoogleSigningIn) return; // Prevent multiple popup requests
+  //   setIsGoogleSigningIn(true); // Set flag to indicate the request is in progress
 
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      console.log(result);
-      if (result.user) {
-        toast.success("Logged in successfully!", {
-          position: "top-center",
-        });
-        window.location.href = "/";
-      }
-    } catch (error) {
-      console.error(error.message);
-      toast.error(error.message, {
-        position: "top-center",
-      });
-    } finally {
-      setIsGoogleSigningIn(false); // Reset flag after the request is completed
-    }
-  };
+  //   try {
+  //     const provider = new GoogleAuthProvider();
+  //     const result = await signInWithPopup(auth, provider);
+  //     console.log(result);
+  //     if (result.user) {
+  //       toast.success("Logged in successfully!", {
+  //         position: "top-center",
+  //       });
+  //       window.location.href = "/";
+  //     }
+  //   } catch (error) {
+  //     console.error(error.message);
+  //     toast.error(error.message, {
+  //       position: "top-center",
+  //     });
+  //   } finally {
+  //     setIsGoogleSigningIn(false); // Reset flag after the request is completed
+  //   }
+  // };
 
   return (
     <div
@@ -188,14 +188,15 @@ function SignUp() {
           </div>
           <div className="line"></div>
           <div className="media-options">
-            <button
-              className="field google pageButton"
-              onClick={LoginWithGoogle}
-              disabled={isGoogleSigningIn}
-            >
-              <img src={googleLogo} alt="Google Icon" className="google-img" />
-              <span>Login with Google</span>
-            </button>
+            <Link to="/GoogleSignUp">
+              <button
+                className="field google pageButton"
+                disabled={isGoogleSigningIn}
+              >
+                <img src={googleLogo} alt="Google Icon" className="google-img" />
+                <span>Sign up with Google</span>
+              </button>
+            </Link> 
           </div>
         </div>
       </div>
