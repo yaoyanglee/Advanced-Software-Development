@@ -1,13 +1,13 @@
 import React, { useContext } from "react";
 import CityDropdown from "./CityDropdown";
-import DateDropdown from "./DateDropdown";
 import PriceRangeDropdown from "./PriceRangeDropdown";
 import TypeDropdown from "./TypeDropdown";
+import RoSDropdown from "./RoSDropdown";
 
 import { RiSearch2Line } from "react-icons/ri";
 
 import { HouseContext } from "./HouseContext";
-import SearchBox from "./SearchBox";
+// import SearchBox from "./SearchBox";
 
 const Search = () => {
   const { houses } = useContext(HouseContext);
@@ -23,9 +23,9 @@ const Search = () => {
       <div className="px-[20px] py-1 max-w-[1200px] mx-auto flex flex-col lg:flex-row justify-between gap-3 lg:gap-x-3 relative  lg:bg-white rounded-lg">
         <CityDropdown/>
         <TypeDropdown />
-        {/* <DateDropdown/>
+        <RoSDropdown />
         <PriceRangeDropdown/>
-        <SearchBox /> */}
+        {/* <SearchBox /> */}
         <button
           onClick={() => {
             handleClick();

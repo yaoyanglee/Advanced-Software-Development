@@ -16,6 +16,7 @@
     "autoprefixer": "^10.4.14",
     "autosuggest-highlight": "^3.3.4",
     "axios": "^1.7.5",
+    "decimal-format": "^3.0.1",
     "firebase": "^10.13.0",
     "framer-motion": "^11.3.30",
     "react": "^18.2.0",

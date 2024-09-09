@@ -4,9 +4,11 @@ import { BiBed, BiBath, BiArea } from "react-icons/bi";
 import { RiHeart3Line } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { ImSpinner2 } from "react-icons/im";
+import DecimalFormat from 'decimal-format';
 
 const HouseList = () => {
   const { houses, loading } = useContext(HouseContext);
+  const df = new DecimalFormat('#,###,###,###,###');
   console.log(houses);
 
   if (loading) {
@@ -29,7 +31,7 @@ const HouseList = () => {
                   <div className="flex justify-between items-center px-3">
                     <div className="text-lg text-violet-600 mb-4 font-bold pl-2">
                       {house.propertyName}
-                      <br></br>${house.price}{" "}
+                      <br></br>${df.format(house.price)}{" "}
                       {house.RoS === "Rent" ? "/pw" : ""}
                       <span className="text-gray-500 font-light text-sm"></span>
                     </div>
