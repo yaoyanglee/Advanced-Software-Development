@@ -1,80 +1,53 @@
 import React, { useState } from "react";
-import {
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-} from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth, db } from "../Firebase";
 import { setDoc, doc } from "firebase/firestore";
 import "./Login&Signup&reset.css";
-import googleLogo from "../assets/img/googleIcon.png";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function SignUp() {
-  // const auth = getAuth(app);
-  // const db = getFirestore(app);
-
+function GoogleSignUp() {
   const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState("");
-  const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
   const navigate = useNavigate();
+  const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
 
-  const handleSignUp = async (e) => {
+  const SignUpWithGoogle = async (e) => {
     e.preventDefault();
+    if (isGoogleSigningIn) return;
+    setIsGoogleSigningIn(true);
+
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      const user = auth.currentUser;
-      console.log(user);
-      if (user) {
-        await setDoc(doc(db, "Users", user.uid), {
-          Name: name,
-          Email: user.email,
-          PhoneNum: phone,
-          Status: status,
-        });
-      }
-      console.log("User Registered Successfully!!");
-      toast.success("Sign Up Accounct Successfully!", {
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      // Get user details from Google auth result
+      const user = result.user;
+      const googleEmail = user.email;
+      const userId = user.uid;
+      // Save user info to Firestore
+      await setDoc(doc(db, "Users", userId), {
+        Emial: googleEmail,
+        Name: name,
+        PhoneNum: phone,
+        Status: status,
+      });
+
+      // Show success message and navigate to login
+      toast.success("Signed up successfully!", {
         position: "top-center",
-        autoClose: 5000,
+        autoClose: 3000,
         onClose: () => navigate("/Login"),
       });
     } catch (error) {
-      console.log(error.message);
-      toast.error("The user has already registered!", {
-        position: "top-center",
-      });
+      toast.error("Invalid access code!", { position: "top-center" });
+      setIsGoogleSigningIn(false);
+      return;
+    } finally {
+      setIsGoogleSigningIn(false);
     }
   };
-
-  // const LoginWithGoogle = async () => {
-  //   if (isGoogleSigningIn) return; // Prevent multiple popup requests
-  //   setIsGoogleSigningIn(true); // Set flag to indicate the request is in progress
-
-  //   try {
-  //     const provider = new GoogleAuthProvider();
-  //     const result = await signInWithPopup(auth, provider);
-  //     console.log(result);
-  //     if (result.user) {
-  //       toast.success("Logged in successfully!", {
-  //         position: "top-center",
-  //       });
-  //       window.location.href = "/";
-  //     }
-  //   } catch (error) {
-  //     console.error(error.message);
-  //     toast.error(error.message, {
-  //       position: "top-center",
-  //     });
-  //   } finally {
-  //     setIsGoogleSigningIn(false); // Reset flag after the request is completed
-  //   }
-  // };
 
   return (
     <div
@@ -91,7 +64,7 @@ function SignUp() {
           <Link to="/">{"<Back"}</Link>
           <div className="form-content">
             <header>Signup</header>
-            <form onSubmit={handleSignUp}>
+            <form onSubmit={SignUpWithGoogle}>
               <div className="field input-field">
                 <input
                   type="text"
@@ -99,26 +72,6 @@ function SignUp() {
                   className="input"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="field input-field">
-                <input
-                  type="email"
-                  placeholder="Email"
-                  className="input"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="field input-field">
-                <input
-                  type="password"
-                  placeholder="Create password"
-                  className="input"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
@@ -186,26 +139,10 @@ function SignUp() {
               </span>
             </div>
           </div>
-          <div className="line"></div>
-          <div className="media-options">
-            <Link to="/GoogleSignUp">
-              <button
-                className="field google pageButton"
-                disabled={isGoogleSigningIn}
-              >
-                <img
-                  src={googleLogo}
-                  alt="Google Icon"
-                  className="google-img"
-                />
-                <span>Sign up with Google</span>
-              </button>
-            </Link>
-          </div>
         </div>
       </div>
     </div>
   );
 }
 
-export default SignUp;
+export default GoogleSignUp;
