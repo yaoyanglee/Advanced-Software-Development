@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-
 
 const UserNavbar = ({ toggleRentModal, toggleSellModal }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -30,22 +29,42 @@ const UserNavbar = ({ toggleRentModal, toggleSellModal }) => {
               91acres
             </p>
           </Link>
-          <Link className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg" to="/rent">
+          <Link
+            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
+            to="/rent"
+          >
             Rent
           </Link>
-          <Link className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg" to="/buy">
+          <Link
+            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
+            to="/buy"
+          >
             Buy
           </Link>
-          <Link className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg" to="" onClick={toggleSellModal}>
+          <Link
+            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
+            to=""
+            onClick={toggleSellModal}
+          >
             Sell
           </Link>
-          <Link className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg" to="" onClick={toggleRentModal}>
+          <Link
+            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
+            to=""
+            onClick={toggleRentModal}
+          >
             Upload Rental
           </Link>
-          <Link to="/favourites" className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg">
+          <Link
+            to="/favourites"
+            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
+          >
             Favourites
           </Link>
-          <Link className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg" to="">
+          <Link
+            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
+            to=""
+          >
             Manage Property
           </Link>
         </div>
@@ -63,14 +82,15 @@ const UserNavbar = ({ toggleRentModal, toggleSellModal }) => {
               <div className="flex flex-col items-center py-2">
                 {/* Profile Section */}
                 <div className="flex items-center justify-center bg-gray-200 w-14 h-14 rounded-full mb-2">
-                  <span className="text-2xl font-bold">{firstCharacter}</span> {/* You can dynamically insert initials */}
+                  <span className="text-2xl font-bold">{firstCharacter}</span>{" "}
+                  {/* You can dynamically insert initials */}
                 </div>
                 <p className="font-bold">{userName}</p>
                 <p className="text-sm text-gray-500">{userEmail}</p>
               </div>
               {/* Manage Account */}
               <Link
-                to="/account"
+                to="/Account"
                 className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full"
               >
                 <i className="fas fa-cog"></i>
