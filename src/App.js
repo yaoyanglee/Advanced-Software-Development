@@ -12,6 +12,7 @@ import RentPropertyModal from "./pages/RentPropertyModal";
 import SellPropertyModal from "./pages/SellPropertyModal";
 import Rent from "./pages/Rent.js";
 import Buy from "./pages/Buy.js";
+import Account from "./pages/Account.js";
 
 // import Banner from "./components/Banner";
 
@@ -42,6 +43,7 @@ function App() {
         <Route path="/Reset" element={<Reset />} />
         <Route path="/UserHome" element={<UserHome />} />
         <Route path="/GoogleSignUp" element={<GoogleSignUp />} />
+        <Route path="/Account" element={<Account />} />
       </Routes>
     </>
   );
