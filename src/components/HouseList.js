@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { ImSpinner2 } from "react-icons/im";
 import DecimalFormat from "decimal-format";
 import { useFavourites } from "../contexts/FavouritesContext"; // Import the useFavourites hook
-
+//test
 const HouseList = () => {
   const { houses, loading } = useContext(HouseContext);
   const { addToFavourites, isInFavourites } = useFavourites(); // Destructure needed functions from useFavourites
