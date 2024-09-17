@@ -34,8 +34,10 @@ import {
   getDocs,
   addDoc,
   getFirestore,
+  serverTimestamp,
 } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const GOOGLE_MAPS_API_KEY = "AIzaSyA7qPVACs1MeMVb_ELlxGABCGJgZx7t0S4";
 
@@ -158,6 +160,45 @@ export default function SellPropertyModal({ modal, toggleModal }) {
     setOpenSnackbar(false);
   };
 
+  // This is for finding the currently logged in user. Ensures that information is present even after refreshing
+  const [user, setUser] = useState(null); // Track the current user explicitly
+
+  // Listen to the auth state change to get the current user
+  const auth = getAuth();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser); // Set the user once Firebase rehydrates it
+      } else {
+        console.log("No user is signed in.");
+      }
+    });
+
+    // Clean up the listener
+    return () => unsubscribe();
+  }, [auth]);
+
+  // This is for logging user events
+  const logUserAction = async (action, details = "") => {
+    if (user) {
+      const userActivityLogRef = collection(db, "Logging");
+
+      try {
+        await addDoc(userActivityLogRef, {
+          userId: user.uid, // User ID
+          email: user.email, // User email (optional)
+          action: action, // Description of the action performed
+          details: details, // Additional details about the action (if any)
+          timestamp: serverTimestamp(), // Current time of action
+        });
+        console.log("User action logged:", action);
+      } catch (error) {
+        console.error("Error logging user action: ", error);
+      }
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       // Upload the images to Firebase Storage and get URLs
@@ -187,6 +228,10 @@ export default function SellPropertyModal({ modal, toggleModal }) {
       setOpenSnackbar(true);
       // alert("Property uploaded successfully!");
       toggleModal(); // Close modal on successful submission
+      logUserAction(
+        "Uploaded a property for sale",
+        `Uploaded for sale property: ${propertyName}`
+      );
     } catch (error) {
       console.error("Error uploading property: ", error);
       alert("Failed to upload property. Please try again.");
