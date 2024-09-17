@@ -4,24 +4,24 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- '*'
+  - "*"
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '14.x'
-  displayName: 'Install Node.js'
+  - task: NodeTool@0
+    inputs:
+      versionSpec: "14.x"
+    displayName: "Install Node.js"
 
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+  - script: |
+      npm install
+      npm run build
+    displayName: "npm install and build"
 
-- script: |
-    test('test', () => {
-      expect(true).toBe(true);
-    });
-  displayName: 'Run Login.test.js Unit Test'
+  - script: |
+      test('test', () => {
+        expect(true).toBe(true);
+      });
+    displayName: "Run Login.test.js Unit Test"
