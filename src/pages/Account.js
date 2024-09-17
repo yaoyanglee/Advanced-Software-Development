@@ -6,10 +6,21 @@ import {
   Divider,
   Card,
   CardContent,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Paper,
 } from "@mui/material";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getAuth, updatePassword, signOut } from "firebase/auth"; // For password update
+import {
+  getAuth,
+  updatePassword,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth"; // For password update
 import {
   doc,
   updateDoc,
@@ -20,6 +31,9 @@ import {
   where,
   getDocs,
   deleteDoc,
+  addDoc,
+  serverTimestamp,
+  orderBy,
 } from "firebase/firestore"; // For updating account
 import UserNavbar from "../components/UserNavbar";
 import RentPropertyModal from "./RentPropertyModal";
@@ -39,7 +53,22 @@ const Account = () => {
   const [loading, setLoading] = useState(true);
   const db = getFirestore();
   const auth = getAuth();
-  const user = auth.currentUser;
+  // const user = auth.currentUser;
+  const [user, setUser] = useState(null); // Track the current user explicitly
+
+  // Listen to the auth state change to get the current user
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser); // Set the user once Firebase rehydrates it
+      } else {
+        console.log("No user is signed in.");
+      }
+    });
+
+    // Clean up the listener
+    return () => unsubscribe();
+  }, [auth]);
 
   // Retrieving user information by their emails
   useEffect(() => {
@@ -86,6 +115,56 @@ const Account = () => {
 
   console.log("Currently logged in user: ", userData);
 
+  // This fetches the user logs
+  const [userLogs, setUserLogs] = useState([]);
+  useEffect(() => {
+    const fetchUserLogs = async () => {
+      if (user) {
+        const logsQuery = query(
+          collection(db, "Logging"),
+          where("userId", "==", user.uid), // Get logs for the current user
+          orderBy("timestamp", "desc") // Order logs by timestamp (most recent first)
+        );
+
+        try {
+          const querySnapshot = await getDocs(logsQuery);
+          const logs = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setUserLogs(logs); // Set logs to state
+        } catch (error) {
+          console.error("Error fetching user logs: ", error);
+        }
+      }
+    };
+
+    fetchUserLogs();
+  }, [db, user]);
+
+  console.log(userLogs);
+
+  // This is for logging user events
+  const logUserAction = async (action, details = "") => {
+    if (user) {
+      const userActivityLogRef = collection(db, "Logging");
+
+      try {
+        await addDoc(userActivityLogRef, {
+          userId: user.uid, // User ID
+          email: user.email, // User email (optional)
+          action: action, // Description of the action performed
+          details: details, // Additional details about the action (if any)
+          timestamp: serverTimestamp(), // Current time of action
+        });
+        console.log("User action logged:", action);
+      } catch (error) {
+        console.error("Error logging user action: ", error);
+      }
+    }
+  };
+
+  // This handles account updates, such as name and number change
   const handleAccountUpdate = async () => {
     if (user) {
       const userRef = doc(db, "Users", user.uid);
@@ -95,6 +174,12 @@ const Account = () => {
           PhoneNum: userData.phoneNumber,
         });
         toast.success("Account updated successfully!");
+
+        // Log the account update action
+        logUserAction(
+          "Name or Phone Number changed",
+          `Name: ${userData.name}, Phone: ${userData.phoneNumber}`
+        );
       } catch (error) {
         console.error("Error updating user data: ", error);
         toast.error("Error updating account: " + error.message);
@@ -129,6 +214,9 @@ const Account = () => {
             }, 0); // 1.5 second delay
           },
         });
+
+        // Log password change
+        logUserAction("Password changed");
       } catch (error) {
         toast.error("Error updating password: " + error.message);
       }
@@ -247,6 +335,44 @@ const Account = () => {
           >
             Freeze Account
           </Button> */}
+
+          {/* Display User Activity Logs */}
+          <Card style={{ margin: "20px", padding: "20px" }}>
+            <CardContent>
+              <Typography variant="h6">Recent Activities</Typography>
+              <Divider style={{ margin: "20px 0" }} />
+
+              {/* Display logs in a table */}
+              {userLogs.length > 0 ? (
+                <Table component={Paper}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Action</TableCell>
+                      <TableCell>Details</TableCell>
+                      <TableCell>Timestamp</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {userLogs.map((log) => (
+                      <TableRow key={log.id}>
+                        <TableCell>{log.action}</TableCell>
+                        <TableCell>{log.details || "N/A"}</TableCell>
+                        <TableCell>
+                          {log.timestamp
+                            ? new Date(
+                                log.timestamp.seconds * 1000
+                              ).toLocaleString()
+                            : "N/A"}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <Typography>No recent activities.</Typography>
+              )}
+            </CardContent>
+          </Card>
         </CardContent>
       </Card>
       <ToastContainer />
