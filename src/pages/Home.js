@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import HouseList from "../components/HouseList";
+import HouseMap from "../components/HouseMap";
 import Search from "../components/Search";
 import Navbar from "../components/Navbar";
 import RentPropertyModal from "./RentPropertyModal";
@@ -18,17 +19,18 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-[1800px] ">
+    <div className="min-h-screen">
       <Navbar
         toggleRentModal={toggleRentModal}
         toggleSellModal={toggleSellModal}
       />
-      <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
-      <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} />
+      {/* <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
+      <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} /> */}
     
       <Search />
       <br></br>
-      <HouseList />
+      {/* <HouseList /> */}
+      <HouseMap />
     </div>
   );
 };
