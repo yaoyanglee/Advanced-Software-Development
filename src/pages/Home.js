@@ -24,8 +24,8 @@ const Home = () => {
         toggleRentModal={toggleRentModal}
         toggleSellModal={toggleSellModal}
       />
-      {/* <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
-      <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} /> */}
+      <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
+      <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} />
     
       <Search />
       <br></br>

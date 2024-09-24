@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../Firebase";
 import { doc, getDoc } from "firebase/firestore";
-import "./Login&Signup&reset.css";
+import "./Login&Signup&Reset.css";
 import googleLogo from "../assets/img/googleIcon.png";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -33,7 +33,7 @@ function LogIn() {
       toast.success("Logged in successfully!", {
         position: "top-center",
       });
-      window.location.href = "/UserHome";
+      window.location.href = "/";
     } catch (error) {
       console.log(error.message);
       toast.error("Invalid emaill or password", {
@@ -62,7 +62,7 @@ function LogIn() {
         toast.success("Logged in successfully!", {
           position: "top-center",
         });
-        window.location.href = "/UserHome";
+        window.location.href = "/";
       }
     } catch (error) {
       console.error(error.message);
