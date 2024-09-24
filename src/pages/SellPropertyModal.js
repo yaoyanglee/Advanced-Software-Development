@@ -39,7 +39,7 @@ import {
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-const GOOGLE_MAPS_API_KEY = "AIzaSyA7qPVACs1MeMVb_ELlxGABCGJgZx7t0S4";
+const GOOGLE_MAPS_API_KEY = "AIzaSyA52M75qm_GT4k2ZRpQjqPQwDIvVm6YsAk";
 
 function loadScript(src, position, id) {
   if (!position) {
