@@ -41,22 +41,10 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
           </Link>
           <Link
             className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
-            to="/rent"
-          >
-            Rent
-          </Link>
-          <Link
-            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
-            to="/buy"
-          >
-            Buy
-          </Link>
-          <Link
-            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
             to=""
             onClick={toggleSellModal}
           >
-            Sell
+            Upload for Sale
           </Link>
           <Link
             className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"

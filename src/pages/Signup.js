@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../Firebase";
 import { setDoc, doc } from "firebase/firestore";
-import "./Login&Signup&reset.css";
+import "./Login&Signup&Reset.css";
 import googleLogo from "../assets/img/googleIcon.png";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
