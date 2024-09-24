@@ -4,7 +4,6 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Reset from "./pages/Reset.js";
 import { Routes, Route } from "react-router-dom";
-import UserHome from "./pages/UserHome.js";
 import GoogleSignUp from "./pages/googleSignUp.js";
 import Favourites from "./pages/Favourites";
 import RegisterProperty from "./pages/RegisterProperty";
@@ -41,7 +40,6 @@ function App() {
         <Route path="/Login" element={<Login />} />
         <Route path="/Signup" element={<Signup />} />
         <Route path="/Reset" element={<Reset />} />
-        <Route path="/UserHome" element={<UserHome />} />
         <Route path="/GoogleSignUp" element={<GoogleSignUp />} />
         <Route path="/Account" element={<Account />} />
       </Routes>

@@ -33,7 +33,7 @@ function LogIn() {
       toast.success("Logged in successfully!", {
         position: "top-center",
       });
-      window.location.href = "/UserHome";
+      window.location.href = "/";
     } catch (error) {
       console.log(error.message);
       toast.error("Invalid emaill or password", {
@@ -62,7 +62,7 @@ function LogIn() {
         toast.success("Logged in successfully!", {
           position: "top-center",
         });
-        window.location.href = "/UserHome";
+        window.location.href = "/";
       }
     } catch (error) {
       console.error(error.message);

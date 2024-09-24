@@ -35,7 +35,7 @@ import {
   serverTimestamp,
   orderBy,
 } from "firebase/firestore"; // For updating account
-import UserNavbar from "../components/UserNavbar";
+import Navbar from "../components/Navbar";
 import RentPropertyModal from "./RentPropertyModal";
 import SellPropertyModal from "./SellPropertyModal";
 
@@ -255,7 +255,7 @@ const Account = () => {
 
   return (
     <div className="min-h-[1800px] ">
-      <UserNavbar
+      <Navbar
         toggleRentModal={toggleRentModal}
         toggleSellModal={toggleSellModal}
       />
