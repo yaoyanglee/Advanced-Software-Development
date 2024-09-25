@@ -16,7 +16,7 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
     setUserName(name);
     setUserEmail(email);
   }, []);
-  const firstCharacter = userName.charAt(0);
+  // const firstCharacter = userName.charAt(0);
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
@@ -86,7 +86,7 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
                  <div className="flex flex-col items-center py-2">
                    {/* Profile Section */}
                    <div className="flex items-center justify-center bg-gray-200 w-14 h-14 rounded-full mb-2">
-                     <span className="text-2xl font-bold">{firstCharacter}</span> {/* You can dynamically insert initials */}
+                     <span className="text-2xl font-bold">{userName.charAt(0)}</span> {/* You can dynamically insert initials */}
                    </div>
                    <p className="font-bold">{userName}</p>
                    <p className="text-sm text-gray-500">{userEmail}</p>
