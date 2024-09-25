@@ -73,6 +73,8 @@ export default function SellPropertyModal({ modal, toggleModal }) {
   const [agentName, setAgentName] = useState("");
   const [price, setPrice] = useState("");
   const [address, setAddress] = useState("");
+  const [lat, setLat] = useState(null);
+  const [lng, setLng] = useState(null);
   const [images, setImages] = useState([]);
 
   // Edits start here
@@ -215,7 +217,13 @@ export default function SellPropertyModal({ modal, toggleModal }) {
 
       await addDoc(collection(db, "Sell"), {
         propertyName,
-        address,
+        address: {
+          description: address.description, 
+          place_id: address.place_id, 
+          structured_formatting: address.structured_formatting, 
+          lat: lat,  // Latitude
+          lng: lng   // Longitude
+        },
         numberOfRooms,
         numberOfBeds,
         numCarpark,
@@ -280,6 +288,18 @@ export default function SellPropertyModal({ modal, toggleModal }) {
                 setOptions(newValue ? [newValue, ...options] : options);
                 setValue(newValue);
                 setAddress(newValue);
+
+                const geocoder = new window.google.maps.Geocoder();
+                const request = { placeId: newValue.place_id };
+
+                geocoder.geocode(request, (results, status) => {
+                  if (status === "OK") {
+                    if (results[0]) {
+                      setLat(results[0].geometry.location.lat());
+                      setLng(results[0].geometry.location.lng());
+                    }
+                  }
+                });
               }}
               onInputChange={(event, newInputValue) => {
                 setInputValue(newInputValue);

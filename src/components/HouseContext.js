@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext } from "react";
-import data from "../data"; // Ensure this path is correct
+import data from "../data";
 
 // Create the HouseContext
 export const HouseContext = createContext();

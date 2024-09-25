@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import {APIProvider, Map, MapCameraChangedEvent} from '@vis.gl/react-google-maps';
 import './HouseMap.css'
+import { HouseContext } from "./HouseContext";
 
 const HouseMap = () => {
+  const { houses } = useContext(HouseContext);
+  
   return (
     <APIProvider apiKey={'AIzaSyA52M75qm_GT4k2ZRpQjqPQwDIvVm6YsAk'} onLoad={() => console.log('Maps API has loaded.')}>
         <div className="map-container">

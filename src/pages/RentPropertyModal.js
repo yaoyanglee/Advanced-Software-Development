@@ -77,6 +77,8 @@ export default function RentPropertyModal({ modal, toggleModal }) {
   const [agentName, setAgentName] = useState("");
   const [price, setPrice] = useState("");
   const [address, setAddress] = useState("");
+  const [lat, setLat] = useState(null);
+  const [lng, setLng] = useState(null);
   const [avaDate, setAvaDate] = useState("");
   const [bond, setBond] = useState("");
   const [images, setImages] = useState([]);
@@ -214,7 +216,13 @@ export default function RentPropertyModal({ modal, toggleModal }) {
 
       await addDoc(collection(db, "Rent"), {
         propertyName,
-        address,
+        address: {
+          description: address.description, 
+          place_id: address.place_id, 
+          structured_formatting: address.structured_formatting, 
+          lat: lat,  // Latitude
+          lng: lng   // Longitude
+        },
         numberOfRooms,
         numberOfBeds,
         price,
@@ -280,8 +288,19 @@ export default function RentPropertyModal({ modal, toggleModal }) {
               onChange={(event, newValue) => {
                 setOptions(newValue ? [newValue, ...options] : options);
                 setValue(newValue);
-                // We add the selected address to the useState
                 setAddress(newValue);
+
+                const geocoder = new window.google.maps.Geocoder();
+                const request = { placeId: newValue.place_id };
+
+                geocoder.geocode(request, (results, status) => {
+                  if (status === "OK") {
+                    if (results[0]) {
+                      setLat(results[0].geometry.location.lat());
+                      setLng(results[0].geometry.location.lng());
+                    }
+                  }
+                });
               }}
               onInputChange={(event, newInputValue) => {
                 setInputValue(newInputValue);
