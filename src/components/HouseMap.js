@@ -62,6 +62,7 @@ const HouseMap = () => {
     <APIProvider apiKey={'AIzaSyA52M75qm_GT4k2ZRpQjqPQwDIvVm6YsAk'} onLoad={() => console.log('Maps API has loaded.')}>
         <div className="map-container">
           <Map
+            mapId='eb9ed4134522d2ad'
             defaultZoom={13}
             defaultCenter={{ lat: -33.860664, lng: 151.208138 }}
             onCameraChanged={(ev) => 
