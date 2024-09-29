@@ -1,13 +1,13 @@
 import React, { useContext } from "react";
 import { HouseContext } from "./HouseContext";
-import { BiBed, BiBath, BiArea } from "react-icons/bi";
+import { BiBed, BiBath, BiArea, BiCar } from "react-icons/bi";
 import { RiHeart3Line, RiHeart3Fill } from "react-icons/ri"; // Import both outline and filled heart icons
 import { Link } from "react-router-dom";
 import { ImSpinner2 } from "react-icons/im";
 import DecimalFormat from "decimal-format";
 import { useFavourites } from "../contexts/FavouritesContext"; // Import the useFavourites hook
-//test
-const HouseList = () => {
+
+const HouseList = ({ inMapView = false }) => {
   const { houses, loading } = useContext(HouseContext);
   const { addToFavourites, isInFavourites } = useFavourites(); // Destructure needed functions from useFavourites
   const df = new DecimalFormat("#,###,###,###,###");
@@ -29,7 +29,7 @@ const HouseList = () => {
   return (
     <section className="mb-20">
       <div className="container mx-auto max-w-[1100px]">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
+        <div className={`container mx-auto ${inMapView ? 'flex flex-col gap-4' : "grid md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5"}`}>
           {houses.map((house, index) => (
             <Link to={`/property/${house.id}`} key={index}>
               <div className="bg-white shadow-1 pb-5 rounded-lg w-full max-w-[300px] mx-auto cursor-pointer hover:shadow-2xl transition text-gray-600">
@@ -71,13 +71,19 @@ const HouseList = () => {
                       <div className="text-[20px] text-violet-700">
                         <BiBed />
                       </div>
-                      <div>{house.numberOfRooms}</div>
+                      <div>{house.numberOfBeds}</div>
                     </div>
                     <div className="flex items-center gap-1">
                       <div className="text-[20px] text-violet-700">
                         <BiBath />
                       </div>
-                      <div>{house.numberOfBath}</div>
+                      <div>{house.numberOfBaths}</div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="text-[20px] text-violet-700">
+                        <BiCar />
+                      </div>
+                      <div>{house.numCarpark}</div>
                     </div>
                     <div className="flex items-center gap-1">
                       {/* Add more info like surface area if needed */}

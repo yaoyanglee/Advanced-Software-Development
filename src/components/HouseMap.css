@@ -1,9 +1,23 @@
+/* Container to hold both the map and the house list */
+.map-list-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* Styling for the house list (left side) */
+.list-container {
+  width: 30%; /* Adjust this width as needed */
+  height: 900px;
+  padding: 10px;
+  overflow-y: auto;
+  border-right: 1px solid #ddd; /* Optional: separates the list and map */
+}
+
+/* Styling for the map (right side) */
 .map-container {
-    display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    height: 500px; /* You can adjust this height */
-    width: 1000px;
-    margin: 0 auto; /* Center horizontally */
-  }
-  
+  height: 500px;
+  width: 1000px; 
+  position: relative;
+}
+
