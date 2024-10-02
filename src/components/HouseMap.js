@@ -18,10 +18,6 @@ const HouseMap = () => {
   const { addToFavourites, isInFavourites } = useFavourites(); // Destructure needed functions from useFavourites
   const df = new DecimalFormat("#,###,###,###,###");
 
-  const handleAddToFavourites = (house) => {
-    addToFavourites(house);
-  };
-
   if (loading) {
     return (
       <ImSpinner2 className="mx-auto animate-spin text-4xl text-violet-700 font-bold mt-[200px]" />
