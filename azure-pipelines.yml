@@ -21,5 +21,6 @@ steps:
     displayName: "npm install and build"
 
   - script: |
-      npm test -- src/__test__/HouseContext.test.js -- --forceExit
+      npm test -- src/__test__/HouseContext.test.js
     displayName: "Run HouseContext Unit Test"
+    timeoutInMinutes: 1
