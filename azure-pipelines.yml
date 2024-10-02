@@ -21,12 +21,9 @@ steps:
     displayName: "npm install and build"
 
   - script: |
-      npm test -- src/test/HouseContext.test.js
+      npm test -- src/test/HouseContext.test.js --forceExit
     displayName: "Run HouseContext Unit Test"
     continueOnError: false  
     timeoutInMinutes: 5   
 
-  - script: |
-      echo "Tests passed, proceeding to the next step."
-    displayName: "Next Step"
-    condition: succeeded()
+
