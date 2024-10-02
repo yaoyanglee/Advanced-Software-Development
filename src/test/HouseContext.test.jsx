@@ -4,7 +4,7 @@ import React from 'react';
 import { getDocs, query, collection } from 'firebase/firestore';
 
 jest.mock('firebase/firestore', () => ({
-    getFirestore: jest.fn(() => ({})), // Mocking it to return a mock Firestore instance
+    getFirestore: jest.fn(() => ({})), 
     collection: jest.fn(),
     query: jest.fn(),
     getDocs: jest.fn(),
@@ -12,11 +12,10 @@ jest.mock('firebase/firestore', () => ({
   
 describe('HouseContextProvider', () => {
   beforeEach(() => {
-    // Clear all instances and calls to constructor and all methods:
     jest.clearAllMocks();
   });
 
-  test('renders without crashing and provides default values', () => {
+  test('renders without crashing and provides default values', async () => {
     render(
       <HouseContextProvider>
         <HouseContext.Consumer>
@@ -32,10 +31,13 @@ describe('HouseContextProvider', () => {
       </HouseContextProvider>
     );
 
-    expect(screen.getByTestId('city')).toHaveTextContent('');
-    expect(screen.getByTestId('type')).toHaveTextContent('');
-    expect(screen.getByTestId('RoS')).toHaveTextContent('');
-    expect(screen.getByTestId('price')).toHaveTextContent('Price range (any)');
+    // Use waitFor to wait for potential async state updates
+    await waitFor(() => {
+      expect(screen.getByTestId('city')).toHaveTextContent('');
+      expect(screen.getByTestId('type')).toHaveTextContent('');
+      expect(screen.getByTestId('RoS')).toHaveTextContent('');
+      expect(screen.getByTestId('price')).toHaveTextContent('Price range (any)');
+    });
   });
 
   test('fetches and filters houses correctly', async () => {
