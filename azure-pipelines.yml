@@ -21,9 +21,9 @@ steps:
     displayName: "npm install and build"
 
   - script: |
-      npm test -- src/test/HouseContext.test.js --forceExit
+      npm test -- src/test/HouseContext.test.js --runInBand --forceExit --detectOpenHandles
     displayName: "Run HouseContext Unit Test"
     continueOnError: false  
-    timeoutInMinutes: 5   
+    timeoutInMinutes: 5    
 
 
