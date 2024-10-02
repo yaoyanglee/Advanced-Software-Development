@@ -21,5 +21,5 @@ steps:
     displayName: "npm install and build"
 
   - script: |
-      npm test -- src/__test__/HouseContext.test.js
+      npm test -- src/test/HouseContext.test.js --ci
     displayName: "Run HouseContext Unit Test"
