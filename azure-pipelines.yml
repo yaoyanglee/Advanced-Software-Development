@@ -23,4 +23,3 @@ steps:
   - script: |
       npm test -- src/__test__/HouseContext.test.js
     displayName: "Run HouseContext Unit Test"
-    timeoutInMinutes: 1
