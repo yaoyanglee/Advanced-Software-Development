@@ -21,7 +21,5 @@ steps:
     displayName: "npm install and build"
 
   - script: |
-      test('test', () => {
-        expect(true).toBe(true);
-      });
-    displayName: "Run Login.test.js Unit Test"
+      npm test -- src/__test__/HouseContext.test.js
+    displayName: "Run HouseContext Unit Test"
