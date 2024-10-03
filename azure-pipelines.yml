@@ -19,11 +19,13 @@ steps:
       npm install
       npm run build
     displayName: "npm install and build"
+  
+  - task: NPM@1
+    inputs:
+      command: "custom"
+      workingDir: "src/test"
+      customCommand: "run test"
+    displayName: "Run Unit test"
 
-  - script: |
-      npm test -- src/test/HouseContext.test.js --runInBand --forceExit --detectOpenHandles
-    displayName: "Run HouseContext Unit Test"
-    continueOnError: false  
-    timeoutInMinutes: 5    
 
 
