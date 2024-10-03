@@ -23,6 +23,10 @@ steps:
   - script: |
       npm test -- src/test/HouseContext.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
     displayName: "Run House context unit test"
+  
+  - script: |
+      npm test -- src/test/Login.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+    displayName: "Run House context unit test"
 
   - task: PublishTestResults@2
     displayName: 'supply npm test results to pipelines'

@@ -36,7 +36,7 @@ function LogIn() {
       window.location.href = "/";
     } catch (error) {
       console.log(error.message);
-      toast.error("Invalid emaill or password", {
+      toast.error("Invalid email or password", {
         position: "top-center",
       });
     }
@@ -116,7 +116,7 @@ function LogIn() {
               </Link>
             </div>
             <div className="field button-field">
-              <button type="submit" className="pageButton">
+              <button type="submit" className="pageButton" aria-label="email-login">
                 Login
               </button>
               <ToastContainer />
@@ -136,6 +136,7 @@ function LogIn() {
               className="field google pageButton"
               onClick={LoginWithGoogle}
               disabled={isGoogleSigningIn}
+              aria-label="google-login"
             >
               <img src={googleLogo} alt="Google Icon" className="google-img" />
               <span>Login with Google</span>

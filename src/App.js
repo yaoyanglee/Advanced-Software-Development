@@ -7,6 +7,8 @@ import { Routes, Route } from "react-router-dom";
 import GoogleSignUp from "./pages/googleSignUp.js";
 import Favourites from "./pages/Favourites";
 import Account from "./pages/Account.js";
+import PropertyDetail from "./pages/PropertyDetail.js";
+import ManageProperty from "./pages/ManageProperty.js";
 
 // import Banner from "./components/Banner";
 
@@ -34,6 +36,8 @@ function App() {
         <Route path="/Reset" element={<Reset />} />
         <Route path="/GoogleSignUp" element={<GoogleSignUp />} />
         <Route path="/Account" element={<Account />} />
+        <Route path="/PropertyDetail/:id" element={<PropertyDetail />} />
+        <Route path="/ManageProperty" element={<ManageProperty />} />
       </Routes>
     </>
   );

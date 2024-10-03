@@ -25,8 +25,9 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
   const handleSignOut = () => {
     localStorage.setItem("Email", "");
     localStorage.setItem("Name", "");
-    window.location.reload();
+    // window.location.reload();
     // navigate('/');
+    window.location.replace('/'); // Redirects and reloads the page
   };
 
   return (
@@ -61,16 +62,10 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
           </Link>
           <Link
             className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
-            to=""
+            to="/ManageProperty"
           >
             Manage Property
           </Link>
-          {/* <Link
-            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
-            to=""
-          >
-            Resources
-          </Link> */}
         </div>
 
           {userEmail ? (

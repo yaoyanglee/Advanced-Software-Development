@@ -11,7 +11,6 @@ const HouseList = ({ inMapView = false }) => {
   const { houses, loading } = useContext(HouseContext);
   const { addToFavourites, isInFavourites } = useFavourites(); // Destructure needed functions from useFavourites
   const df = new DecimalFormat("#,###,###,###,###");
-
   const handleAddToFavourites = (house) => {
     addToFavourites(house);
   };
@@ -28,10 +27,10 @@ const HouseList = ({ inMapView = false }) => {
 
   return (
     <section className="mb-20">
-      <div className="container mx-auto max-w-[1100px]">
+      <div className="container mx-auto max-w-[1100px]" oncli>
         <div className={`container mx-auto ${inMapView ? 'flex flex-col gap-4' : "grid md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5"}`}>
           {houses.map((house, index) => (
-            <Link to={`/property/${house.id}`} key={index}>
+            <Link to={`/PropertyDetail/${house.id}`} key={index}>
               <div className="bg-white shadow-1 pb-5 rounded-lg w-full max-w-[300px] mx-auto cursor-pointer hover:shadow-2xl transition text-gray-600">
                 <div className="p-3">
                   <div className="flex justify-between items-center px-3">
