@@ -21,7 +21,7 @@ steps:
     displayName: "npm install and build"
   
   - script: |
-      npm test -- src/test/HouseContext.test.js
+      npm test -- src/test/HouseContext.test.js --runInBand
     displayName: "Run House context unit test"
 
 
