@@ -24,7 +24,7 @@ steps:
     inputs:
       command: "custom"
       workingDir: "src/test"
-      customCommand: "npm test -- src/test/HouseContext.test.js"
+      customCommand: "test -- src/test/HouseContext.test.js"
     displayName: "Run House context unit test"
 
 
