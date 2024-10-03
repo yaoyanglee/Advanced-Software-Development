@@ -21,7 +21,7 @@ steps:
     displayName: "npm install and build"
   
   - script: |
-      npm test -- src/test/HouseContext.test.js --runInBand --forceExit
+      npm test -- src/test/HouseContext.test.js --watchAll=false || exit 1
     displayName: "Run House context unit test"
 
 
