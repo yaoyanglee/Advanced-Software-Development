@@ -113,4 +113,9 @@ describe('HouseContextProvider', () => {
       expect(screen.getByText('Error loading data')).toBeInTheDocument();
     });
   });
+  afterAll(() => {
+    // This is where you can close any open connections or perform any necessary cleanup
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
+  });
 });
