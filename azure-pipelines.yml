@@ -20,11 +20,8 @@ steps:
       npm run build
     displayName: "npm install and build"
   
-  - task: NPM@1
-    inputs:
-      command: "custom"
-      workingDir: "src/test"
-      customCommand: "test -- src/test/HouseContext.test.js"
+  - script: |
+      npm test -- src/test/HouseContext.test.js
     displayName: "Run House context unit test"
 
 
