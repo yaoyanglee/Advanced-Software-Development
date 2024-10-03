@@ -25,9 +25,9 @@ steps:
     displayName: "Run House context unit test"
 
   - task: PublishTestResults@2
-  displayName: 'supply npm test results to pipelines'
-  condition: succeededOrFailed() # because otherwise we won't know what tests failed
-  inputs:
-    testResultsFiles: 'junit.xml'
+    displayName: 'supply npm test results to pipelines'
+    condition: succeededOrFailed() 
+    inputs:
+      testResultsFiles: 'junit.xml'
 
 
