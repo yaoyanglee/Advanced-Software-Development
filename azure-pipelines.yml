@@ -28,6 +28,6 @@ steps:
     displayName: 'supply npm test results to pipelines'
     condition: succeededOrFailed() 
     inputs:
-      testResultsFiles: 'junit.xml'
+      testResultsFiles: 'src/test/junit.xml'
 
 
