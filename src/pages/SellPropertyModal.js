@@ -240,7 +240,9 @@ export default function SellPropertyModal({ modal, toggleModal }) {
         agentName,
         propertyType,
         images: uploadedImages,
-        RoS: "Sell"
+        RoS: "Sell",
+        availability: true,
+        agentEmail: localStorage.getItem("Email")
       });
       setOpenSnackbar(true);
       // alert("Property uploaded successfully!");

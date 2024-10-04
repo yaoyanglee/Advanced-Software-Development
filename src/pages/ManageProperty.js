@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Firebase from '../Firebase'; 
-import { collection, query, getDocs, getFirestore, where } from 'firebase/firestore'; 
+import { collection, query, getDocs, getFirestore, where, doc, updateDoc} from 'firebase/firestore'; 
 import Navbar from '../components/Navbar'; 
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import RentPropertyModal from "./RentPropertyModal";
 import SellPropertyModal from "./SellPropertyModal";
 import DecimalFormat from "decimal-format";
 import { ImSpinner2 } from "react-icons/im";
 import { BiBed, BiBath, BiArea, BiCar } from "react-icons/bi";
+import { Center } from '@chakra-ui/react';
 
 const ManageProperty = () => {
   const [status, setStatus] = useState(null);
@@ -23,6 +24,10 @@ const ManageProperty = () => {
   const db = getFirestore(Firebase);
   const [rentModal, setRentModal] = useState(false);
   const [sellModal, setSellModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [isEditable, setIsEditable] = useState(false); // Toggle edit mode
+  const [selectedProperty, setSelectedProperty] = useState(null);
+  const [editMode, setEditMode] = useState(false);
 
   const email = localStorage.getItem("Email");
   const df = new DecimalFormat("#,###,###,###,###");
@@ -82,7 +87,6 @@ const ManageProperty = () => {
     }, [filterOption, email, status, db]);
 
   // Fetch uploaded properties based on email from both Rent and Sell collections
-  useEffect(() => {
     const fetchUploadedProperties = async () => {
       const rentRef = collection(db, "Rent");
       const sellRef = collection(db, "Sell");
@@ -100,8 +104,7 @@ const ManageProperty = () => {
 
     if (status === "Agent" || status === "Landlord") {
       fetchUploadedProperties();
-    }
-  }, [status, email, db]);
+    };
 
   // Handle dropdown filter selection
   const handleFilterChange = (filter) => {
@@ -127,6 +130,51 @@ const ManageProperty = () => {
     );
   }
 
+  // Open update modal and set selected property
+  const handleUpdateModal = (property) => {
+    setSelectedProperty(property);
+    setShowUpdateModal(true);
+    setIsEditable(false); // Start in non-editable mode
+  };
+
+  // Handle save changes to Firestore
+  const handleSaveChanges = async () => {
+    if (selectedProperty) {
+      const docRef = doc(db, selectedProperty.RoS === "Sell" ? "Sell" : "Rent", selectedProperty.id);
+      
+      try {
+        await updateDoc(docRef, { ...selectedProperty });
+        setShowUpdateModal(false); // Close the modal
+        setIsEditable(false);
+        setEditMode(false);
+        await fetchUploadedProperties();
+        toast.success("Property updated successfully!", {
+          position: "top-center",
+          autoClose: 3000,
+        });
+      } catch (error) {
+        toast.error("Failed to update property!", {
+          position: "top-center",
+          autoClose: 3000,
+        });
+      }
+    }
+  };
+
+  // Handle form input change
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setSelectedProperty((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+  
+    // Toggle edit mode
+    const toggleEditMode = () => {
+      setEditMode(!editMode); // Toggle between edit and view mode
+    };
+    
   return (
     <div>
       <Navbar
@@ -273,7 +321,10 @@ const ManageProperty = () => {
             <div className="container mx-auto max-w-[1100px]">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5">
                 {uploadedProperties.map((house, index) => (
-                    <div className="bg-white shadow-1 pb-5 rounded-lg w-full max-w-[300px] mx-auto cursor-pointer hover:shadow-2xl transition text-gray-600">
+                    <div className="bg-white shadow-1 pb-5 rounded-lg w-full max-w-[300px] mx-auto cursor-pointer hover:shadow-2xl transition text-gray-600"
+                    key={house.id}
+                    onClick={() => handleUpdateModal(house)}
+                    >
                       <div className="p-3">
                         <div className="flex justify-between items-center px-3">
                           <div className="text-lg text-violet-600 mb-4 font-bold pl-2">
@@ -317,6 +368,185 @@ const ManageProperty = () => {
           </section>
         )}
       </div>
+
+      {/* Update Modal */}
+      {showUpdateModal && selectedProperty && (
+        <div className="fixed z-10 inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg max-w-4xl w-full relative max-h-[90vh] overflow-y-auto"> {/* Increased max width to 4xl */}
+            <h2 className="text-2xl font-bold mb-4">
+              {selectedProperty.propertyName}
+            </h2>
+
+            {/* Edit button at the top-right corner */}
+            <button
+              className={`absolute top-4 right-4 text-white px-4 py-2 rounded ${
+                editMode ? "bg-blue-500" : "bg-blue-500"
+              }`}
+              onClick={toggleEditMode}
+            >
+              {editMode ? "Cancel" : "Edit"}
+            </button>
+
+            <div className="grid grid-cols-2 gap-4"> {/* Create two columns layout */}
+              <div className="mb-2"> {/* Reduced margin-bottom from mb-4 to mb-2 */}
+                <label className="block text-gray-700 mb-1">Property Name</label> {/* Reduced margin-bottom for label */}
+                <input
+                  type="text"
+                  name="propertyName"
+                  value={selectedProperty.propertyName}
+                  onChange={handleInputChange}
+                  disabled={!editMode}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-violet-600"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="block text-gray-700 mb-1">Property Type</label>
+                <input
+                  type="text"
+                  name="propertyType"
+                  value={selectedProperty.propertyType}
+                  onChange={handleInputChange}
+                  disabled={!editMode}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-violet-600"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="block text-gray-700 mb-1">Price</label>
+                <input
+                  type="text"
+                  name="price"
+                  value={selectedProperty.price}
+                  onChange={handleInputChange}
+                  disabled={!editMode}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-violet-600"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="block text-gray-700 mb-1">City</label>
+                <input
+                  type="text"
+                  name="city"
+                  value={selectedProperty.city}
+                  onChange={handleInputChange}
+                  disabled={!editMode}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-violet-600"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="block text-gray-700 mb-1">numCarpark</label>
+                <input
+                  type="text"
+                  name="numCarpark"
+                  value={selectedProperty.numCarpark}
+                  onChange={handleInputChange}
+                  disabled={!editMode}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-violet-600"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="block text-gray-700 mb-1">numberOfBaths</label>
+                <input
+                  type="text"
+                  name="numberOfBaths"
+                  value={selectedProperty.numberOfBaths}
+                  onChange={handleInputChange}
+                  disabled={!editMode}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-violet-600"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="block text-gray-700 mb-1">numberOfBeds</label>
+                <input
+                  type="text"
+                  name="numberOfBeds"
+                  value={selectedProperty.numberOfBeds}
+                  onChange={handleInputChange}
+                  disabled={!editMode}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-violet-600"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="block text-gray-700 mb-1">Agent Name</label>
+                <input
+                  type="text"
+                  name="agentName"
+                  value={selectedProperty.agentName}
+                  onChange={handleInputChange}
+                  disabled={!editMode}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-violet-600"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="block text-gray-700 mb-1">Agent Email</label>
+                <input
+                  type="text"
+                  name="agentEmail"
+                  value={selectedProperty.agentEmail}
+                  onChange={handleInputChange}
+                  disabled={!editMode}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-violet-600"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="block text-gray-700 mb-1">Contact number</label>
+                <input
+                  type="text"
+                  name="phoneNumber"
+                  value={selectedProperty.phoneNumber}
+                  onChange={handleInputChange}
+                  disabled={!editMode}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-violet-600"
+                />
+              </div>
+
+              <div className="mb-2">
+                <label className="block text-gray-700 mb-1">Availability</label>
+                <select
+                  name="availability"
+                  value={selectedProperty.availability}
+                  onChange={handleInputChange}
+                  disabled={!editMode}
+                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-violet-600 appearance-none pr-8"
+                  style={{ backgroundImage: 'url(data:image/svg+xml;base64,...your-svg-data-here...)', backgroundPosition: 'calc(100% - 15px) center', backgroundRepeat: 'no-repeat' }}
+                >
+                  <option value={true}>True</option>
+                  <option value={false}>False</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Show Save/Cancel buttons at the bottom if in edit mode */}
+            {editMode && (
+              <button
+                className="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition mb-1"
+                onClick={handleSaveChanges}
+              >
+                Save
+              </button>
+            )}
+              <button
+                className="w-full bg-gray-200 text-black py-3 rounded-lg hover:bg-gray-300 transition mt-1"
+                onClick={() => {
+                  setShowUpdateModal(false);
+                  setEditMode(false);
+                  setIsEditable(false);
+                }}
+              >
+                Close
+              </button>
+          </div>
+        </div>
+      )}
+
       <ToastContainer />
     </div>
   );

@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { HouseContext } from "./HouseContext";
-import { BiBed, BiBath, BiArea, BiCar } from "react-icons/bi";
+import { BiBed, BiBath, BiCar } from "react-icons/bi";
 import { RiHeart3Line, RiHeart3Fill } from "react-icons/ri"; // Import both outline and filled heart icons
 import { Link } from "react-router-dom";
 import { ImSpinner2 } from "react-icons/im";
@@ -11,6 +11,7 @@ const HouseList = ({ inMapView = false }) => {
   const { houses, loading } = useContext(HouseContext);
   const { addToFavourites, isInFavourites } = useFavourites(); // Destructure needed functions from useFavourites
   const df = new DecimalFormat("#,###,###,###,###");
+
   const handleAddToFavourites = (house) => {
     addToFavourites(house);
   };
@@ -21,15 +22,18 @@ const HouseList = ({ inMapView = false }) => {
     );
   }
 
-  if (houses.length < 1) {
+  // Filter out houses where availability is false
+  const availableHouses = houses.filter(house => house.availability === true);
+
+  if (availableHouses.length < 1) {
     return <div>Sorry, no match found!</div>;
   }
 
   return (
     <section className="mb-20">
-      <div className="container mx-auto max-w-[1100px]" oncli>
+      <div className="container mx-auto max-w-[1100px]">
         <div className={`container mx-auto ${inMapView ? 'flex flex-col gap-4' : "grid md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-5"}`}>
-          {houses.map((house, index) => (
+          {availableHouses.map((house, index) => (
             <Link to={`/PropertyDetail/${house.id}`} key={index}>
               <div className="bg-white shadow-1 pb-5 rounded-lg w-full max-w-[300px] mx-auto cursor-pointer hover:shadow-2xl transition text-gray-600">
                 <div className="p-3">
@@ -38,7 +42,6 @@ const HouseList = ({ inMapView = false }) => {
                       {house.propertyName}
                       <br />${df.format(house.price)}{" "}
                       {house.RoS === "Rent" ? "/pw" : ""}
-                      <span className="text-gray-500 font-light text-sm"></span>
                     </div>
                     {isInFavourites(house.id) ? (
                       <RiHeart3Fill
@@ -83,9 +86,6 @@ const HouseList = ({ inMapView = false }) => {
                         <BiCar />
                       </div>
                       <div>{house.numCarpark}</div>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      {/* Add more info like surface area if needed */}
                     </div>
                   </div>
                 </div>

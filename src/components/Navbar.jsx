@@ -25,8 +25,9 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
   const handleSignOut = () => {
     localStorage.setItem("Email", "");
     localStorage.setItem("Name", "");
-    // window.location.reload();
-    // navigate('/');
+    window.location.replace('/'); // Redirects and reloads the page
+  };
+  const handleBackToHome = () => {
     window.location.replace('/'); // Redirects and reloads the page
   };
 
@@ -34,7 +35,7 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
     <nav className="py-6 mb-12 border-b">
       <div className="container mx-auto flex justify-between items-center font-bold text-gray-800">
         <div className="flex justify-between items-center gap-6">
-          <Link to="/">
+          <Link onClick={handleBackToHome}>
             {/* <img src={Logo} alt="logo"/> */}
             <p className="text-violet-700 hover:text-violet-800 text-3xl font-bold transition">
               91acres

@@ -242,7 +242,9 @@ export default function RentPropertyModal({ modal, toggleModal }) {
         propertyType,
         avaDate,
         images: uploadedImages,
-        RoS: "Rent"
+        RoS: "Rent",
+        availability: true,
+        agentEmail: localStorage.getItem("Email")
       });
       setOpenSnackbar(true);
       // alert("Property uploaded successfully!");
