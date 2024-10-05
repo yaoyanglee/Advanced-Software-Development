@@ -17,8 +17,7 @@ steps:
 
   - script: |
       npm install
-      npm run build
-    displayName: "npm install and build"
+    displayName: "npm install"
   
   - script: |
       npm test -- src/test/HouseContext.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
