@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth, db } from "../Firebase";
 import { setDoc, doc } from "firebase/firestore";
-import "./Login&Signup&Reset.css";
+import "./Login&Signup&reset.css";
 import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
