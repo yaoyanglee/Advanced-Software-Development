@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Firebase from '../Firebase'; 
-import { collection, query, getDocs, getFirestore, where, doc, updateDoc} from 'firebase/firestore'; 
+import { collection, query, getDocs, getFirestore, where, doc, updateDoc } from 'firebase/firestore'; 
 import Navbar from '../components/Navbar'; 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -58,53 +58,55 @@ const ManageProperty = () => {
     fetchUserStatus();
   }, [db]);
 
-    // Fetch enquiries based on filter
-    useEffect(() => {
-      const fetchEnquiries = async () => {
-        const enquiriesRef = collection(db, "Enquiries");
-        let q;
-  
-        if (filterOption === "My Enquire") {
-          // Query for My Enquiries (email matches)
-          q = query(enquiriesRef, where("email", "==", email)); 
-        } else if (filterOption === "Send to me") {
-          // Query for Enquiries sent to the current user's agentEmail
-          q = query(enquiriesRef, where("agentEmail", "==", email)); 
-        }
-  
-        const querySnapshot = await getDocs(q);
-        const fetchedEnquiries = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setEnquiries(fetchedEnquiries);
-        setFilteredEnquiries(fetchedEnquiries); // Apply filter initially
-      };
-  
-      if (status) {
-        fetchEnquiries();
+  // Fetch enquiries based on filter
+  useEffect(() => {
+    const fetchEnquiries = async () => {
+      const enquiriesRef = collection(db, "Enquiries");
+      let q;
+
+      if (filterOption === "My Enquire") {
+        // Query for My Enquiries (email matches)
+        q = query(enquiriesRef, where("email", "==", email)); 
+      } else if (filterOption === "Send to me") {
+        // Query for Enquiries sent to the current user's agentEmail
+        q = query(enquiriesRef, where("agentEmail", "==", email)); 
       }
-    }, [filterOption, email, status, db]);
+
+      const querySnapshot = await getDocs(q);
+      const fetchedEnquiries = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setEnquiries(fetchedEnquiries);
+      setFilteredEnquiries(fetchedEnquiries); // Apply filter initially
+    };
+
+    if (status) {
+      fetchEnquiries();
+    }
+  }, [filterOption, email, status, db]);
 
   // Fetch uploaded properties based on email from both Rent and Sell collections
-    const fetchUploadedProperties = async () => {
-      const rentRef = collection(db, "Rent");
-      const sellRef = collection(db, "Sell");
+  const fetchUploadedProperties = async () => {
+    const rentRef = collection(db, "Rent");
+    const sellRef = collection(db, "Sell");
 
-      const qRent = query(rentRef, where("agentEmail", "==", email));
-      const qSell = query(sellRef, where("agentEmail", "==", email));
+    const qRent = query(rentRef, where("agentEmail", "==", email));
+    const qSell = query(sellRef, where("agentEmail", "==", email));
 
-      const [rentSnapshot, sellSnapshot] = await Promise.all([getDocs(qRent), getDocs(qSell)]);
+    const [rentSnapshot, sellSnapshot] = await Promise.all([getDocs(qRent), getDocs(qSell)]);
 
-      const rentHouses = rentSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      const sellHouses = sellSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const rentHouses = rentSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const sellHouses = sellSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
-      setUploadedProperties([...rentHouses, ...sellHouses]);
-    };
+    setUploadedProperties([...rentHouses, ...sellHouses]);
+  };
 
+  useEffect(() => {
     if (status === "Agent" || status === "Landlord") {
       fetchUploadedProperties();
-    };
+    }
+  }, [status]);
 
   // Handle dropdown filter selection
   const handleFilterChange = (filter) => {
@@ -143,7 +145,10 @@ const ManageProperty = () => {
       const docRef = doc(db, selectedProperty.RoS === "Sell" ? "Sell" : "Rent", selectedProperty.id);
       
       try {
-        await updateDoc(docRef, { ...selectedProperty });
+        await updateDoc(docRef, {
+          ...selectedProperty,
+          availability: Boolean(selectedProperty.availability), // Ensure availability is boolean
+        });
         setShowUpdateModal(false); // Close the modal
         setIsEditable(false);
         setEditMode(false);
@@ -161,20 +166,24 @@ const ManageProperty = () => {
     }
   };
 
-  // Handle form input change
+  // Handle form input change with boolean conversion for availability
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+    // Explicitly convert availability to boolean
+    const newValue = name === "availability" ? (value === "true") : value;
+
     setSelectedProperty((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: newValue,
     }));
   };
-  
-    // Toggle edit mode
-    const toggleEditMode = () => {
-      setEditMode(!editMode); // Toggle between edit and view mode
-    };
-    
+
+  // Toggle edit mode
+  const toggleEditMode = () => {
+    setEditMode(!editMode); // Toggle between edit and view mode
+  };
+
   return (
     <div>
       <Navbar
@@ -514,14 +523,14 @@ const ManageProperty = () => {
                 <label className="block text-gray-700 mb-1">Availability</label>
                 <select
                   name="availability"
-                  value={selectedProperty.availability}
+                  value={selectedProperty.availability.toString()} // Convert boolean to string for the select element
                   onChange={handleInputChange}
                   disabled={!editMode}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-violet-600 appearance-none pr-8"
                   style={{ backgroundImage: 'url(data:image/svg+xml;base64,...your-svg-data-here...)', backgroundPosition: 'calc(100% - 15px) center', backgroundRepeat: 'no-repeat' }}
                 >
-                  <option value={true}>True</option>
-                  <option value={false}>False</option>
+                  <option value="true">True</option>
+                  <option value="false">False</option>
                 </select>
               </div>
             </div>
