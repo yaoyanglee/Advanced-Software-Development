@@ -116,7 +116,11 @@ function LogIn() {
               </Link>
             </div>
             <div className="field button-field">
-              <button type="submit" className="pageButton" aria-label="email-login">
+              <button
+                type="submit"
+                className="pageButton"
+                aria-label="email-login"
+              >
                 Login
               </button>
               <ToastContainer />
