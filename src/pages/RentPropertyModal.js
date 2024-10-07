@@ -164,9 +164,10 @@ export default function RentPropertyModal({ modal, toggleModal }) {
   };
 
   const extractCityFromAddress = (address) => {
-    const regex = /,\s*([a-zA-Z\s]+)\s+(?:NSW|VIC|QLD|SA|WA|TAS|ACT|NT)\s+[0-9]{4}/; // Adjust for other states as needed
-  const match = address.match(regex);
-  return match ? match[1].trim() : ""; // Return the captured city or an empty string
+    const regex =
+      /,\s*([a-zA-Z\s]+)\s+(?:NSW|VIC|QLD|SA|WA|TAS|ACT|NT)\s+[0-9]{4}/; // Adjust for other states as needed
+    const match = address.match(regex);
+    return match ? match[1].trim() : ""; // Return the captured city or an empty string
   };
 
   // This is for finding the currently logged in user. Ensures that information is present even after refreshing
@@ -225,11 +226,11 @@ export default function RentPropertyModal({ modal, toggleModal }) {
       await addDoc(collection(db, "Rent"), {
         propertyName,
         address: {
-          description: address.description, 
-          place_id: address.place_id, 
-          structured_formatting: address.structured_formatting, 
-          lat: lat,  // Latitude
-          lng: lng   // Longitude
+          description: address.description,
+          place_id: address.place_id,
+          structured_formatting: address.structured_formatting,
+          lat: lat, // Latitude
+          lng: lng, // Longitude
         },
         city,
         numberOfBeds,
@@ -244,7 +245,7 @@ export default function RentPropertyModal({ modal, toggleModal }) {
         images: uploadedImages,
         RoS: "Rent",
         availability: true,
-        agentEmail: localStorage.getItem("Email")
+        agentEmail: localStorage.getItem("Email"),
       });
       setOpenSnackbar(true);
       // alert("Property uploaded successfully!");
@@ -397,6 +398,7 @@ export default function RentPropertyModal({ modal, toggleModal }) {
               type="file"
               multiple
               accept="image/*"
+              data-testid="img-input"
               onChange={(e) => setImages(Array.from(e.target.files))}
             />
             <TextField
