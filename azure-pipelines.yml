@@ -21,6 +21,10 @@ steps:
     displayName: "npm install and build"
   
   - script: |
+      npm test -- src/test/Signup.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+    displayName: "Run user sign up unit test"
+
+  - script: |
       npm test -- src/test/Login.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
     displayName: "Run Login and Google Login unit test"
 
@@ -30,15 +34,11 @@ steps:
   
   - script: |
       npm test -- src/test/HouseList.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
-    displayName: "Run House context unit test"
+    displayName: "Run House List unit test"
 
   - script: |
       npm test -- src/test/HouseMap.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
-    displayName: "Run House context unit test"
-
-  - script: |
-      npm test -- src/test/Signup.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
-    displayName: "Run user sign up unit test"
+    displayName: "Run House Map unit test"
 
   - script: |
       npm test -- src/test/PropertyDetail.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
