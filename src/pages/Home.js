@@ -32,7 +32,7 @@ const Home = () => {
       />
       <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
       <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} />
-
+    
       <Search />
       <br />
       <div className="toggle-switch">

@@ -67,12 +67,15 @@ export default function SellPropertyModal({ modal, toggleModal }) {
   const [role, setRole] = useState(""); // State to track selected role
   const [propertyType, setPropertyType] = useState("");
   const [propertyName, setPropertyName] = useState("");
-  const [numberOfRooms, setNumberOfRooms] = useState("");
+  const [numberOfBaths, setNumberOfBaths] = useState("");
   const [numberOfBeds, setNumberOfBeds] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [agentName, setAgentName] = useState("");
   const [price, setPrice] = useState("");
   const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [lat, setLat] = useState(null);
+  const [lng, setLng] = useState(null);
   const [images, setImages] = useState([]);
 
   // Edits start here
@@ -160,6 +163,12 @@ export default function SellPropertyModal({ modal, toggleModal }) {
     setOpenSnackbar(false);
   };
 
+  const extractCityFromAddress = (address) => {
+    const regex = /,\s*([a-zA-Z\s]+)\s+(?:NSW|VIC|QLD|SA|WA|TAS|ACT|NT)\s+[0-9]{4}/; // Adjust for other states as needed
+  const match = address.match(regex);
+  return match ? match[1].trim() : ""; // Return the captured city or an empty string
+  };
+
   // This is for finding the currently logged in user. Ensures that information is present even after refreshing
   const [user, setUser] = useState(null); // Track the current user explicitly
 
@@ -215,15 +224,25 @@ export default function SellPropertyModal({ modal, toggleModal }) {
 
       await addDoc(collection(db, "Sell"), {
         propertyName,
-        address,
-        numberOfRooms,
+        address: {
+          description: address.description, 
+          place_id: address.place_id, 
+          structured_formatting: address.structured_formatting, 
+          lat: lat,  // Latitude
+          lng: lng   // Longitude
+        },
+        city,
         numberOfBeds,
+        numberOfBaths,
         numCarpark,
         price,
         phoneNumber,
         agentName,
         propertyType,
         images: uploadedImages,
+        RoS: "Sell",
+        availability: true,
+        agentEmail: localStorage.getItem("Email")
       });
       setOpenSnackbar(true);
       // alert("Property uploaded successfully!");
@@ -245,7 +264,7 @@ export default function SellPropertyModal({ modal, toggleModal }) {
       </Button> */}
       <Dialog open={modal} fullWidth maxWidth="sm">
         <DialogTitle>
-          Upload Property for Rent{" "}
+          Upload Property for Sale{" "}
           <IconButton
             onClick={toggleModal}
             style={{
@@ -280,6 +299,19 @@ export default function SellPropertyModal({ modal, toggleModal }) {
                 setOptions(newValue ? [newValue, ...options] : options);
                 setValue(newValue);
                 setAddress(newValue);
+                setCity(extractCityFromAddress(newValue.description));
+
+                const geocoder = new window.google.maps.Geocoder();
+                const request = { placeId: newValue.place_id };
+
+                geocoder.geocode(request, (results, status) => {
+                  if (status === "OK") {
+                    if (results[0]) {
+                      setLat(results[0].geometry.location.lat());
+                      setLng(results[0].geometry.location.lng());
+                    }
+                  }
+                });
               }}
               onInputChange={(event, newInputValue) => {
                 setInputValue(newInputValue);
@@ -359,13 +391,18 @@ export default function SellPropertyModal({ modal, toggleModal }) {
 
             <TextField
               variant="outlined"
-              label="Number of rooms"
-              onChange={(e) => setNumberOfRooms(e.target.value)}
+              label="Number of Beds"
+              onChange={(e) => setNumberOfBeds(e.target.value)}
             ></TextField>
             <TextField
               variant="outlined"
-              label="Number of beds"
-              onChange={(e) => setNumberOfBeds(e.target.value)}
+              label="Number of Baths"
+              onChange={(e) => setNumberOfBaths(e.target.value)}
+            ></TextField>
+            <TextField
+              variant="outlined"
+              label="Number of carparks"
+              onChange={(e) => setNumCarpark(e.target.value)}
             ></TextField>
             <input
               type="file"
@@ -373,11 +410,6 @@ export default function SellPropertyModal({ modal, toggleModal }) {
               accept="image/*"
               onChange={(e) => setImages(Array.from(e.target.files))}
             />
-            <TextField
-              variant="outlined"
-              label="Number of carparks"
-              onChange={(e) => setNumCarpark(e.target.value)}
-            ></TextField>
             <TextField
               variant="outlined"
               label="Selling Price"
@@ -413,8 +445,9 @@ export default function SellPropertyModal({ modal, toggleModal }) {
               label="Property Type"
             >
               <MenuItem value="house">House</MenuItem>
-              <MenuItem value="semi-detached">Semi-Detached</MenuItem>
               <MenuItem value="apartment">Apartment</MenuItem>
+              <MenuItem value="unit">Unit</MenuItem>
+              <MenuItem value="semi-detached">Semi-Detached</MenuItem>
             </Select>
 
             {/* <FormControlLabel

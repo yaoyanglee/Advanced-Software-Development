@@ -12,7 +12,7 @@ pool:
 steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: "14.x"
+      versionSpec: "16.x"
     displayName: "Install Node.js"
 
   - script: |
@@ -21,7 +21,27 @@ steps:
     displayName: "npm install and build"
 
   - script: |
-      test('test', () => {
-        expect(true).toBe(true);
-      });
-    displayName: "Run Login.test.js Unit Test"
+      npm test -- src/test/HouseContext.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+    displayName: "Run House context unit test"
+
+  - script: |
+      npm test -- src/test/Login.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+    displayName: "Run Login and Google Login unit test"
+
+  - script: |
+      npm test -- src/test/PropertyDetail.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+    displayName: "Run showing property detail unit test"
+
+  - script: |
+      npm test -- src/test/Favourites.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+    displayName: "Run Favourites unit test"
+
+  - script: |
+      npm test -- src/test/RentProperty.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+    displayName: "Run Rental Property Upload tests"
+
+  - task: PublishTestResults@2
+    displayName: "supply npm test results to pipelines"
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFiles: "src/test/junit.xml"

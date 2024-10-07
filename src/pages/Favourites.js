@@ -1,25 +1,22 @@
 import React, { useState } from "react";
 import { useFavourites } from "../contexts/FavouritesContext";
+import { useAuth } from "../contexts/AuthContext"; // Add this to check auth status
 import Navbar from "../components/Navbar";
 import RentPropertyModal from "./RentPropertyModal";
 import SellPropertyModal from "./SellPropertyModal";
-import { BiBed, BiBath } from "react-icons/bi"; // Import BiBed and BiBath icons
+import { BiBed, BiBath } from "react-icons/bi";
 
 const Favourites = () => {
   const [rentModal, setRentModal] = useState(false);
   const [sellModal, setSellModal] = useState(false);
-  const [filter, setFilter] = useState("All"); // State to track the filter
-  const [compareList, setCompareList] = useState([]); // State for comparing
+  const [filter, setFilter] = useState("All");
+  const [compareList, setCompareList] = useState([]);
 
-  const toggleRentModal = () => {
-    setRentModal(!rentModal);
-  };
-
-  const toggleSellModal = () => {
-    setSellModal(!sellModal);
-  };
-
+  const { user } = useAuth(); // Get the current user to verify if they are logged in
   const { favourites, removeFromFavourites } = useFavourites();
+
+  const toggleRentModal = () => setRentModal(!rentModal);
+  const toggleSellModal = () => setSellModal(!sellModal);
 
   // Filter Rent or Sell houses
   const filteredFavourites = favourites.filter((house) => {
@@ -38,6 +35,11 @@ const Favourites = () => {
     }
   };
 
+  if (!user) {
+    // Show message when no user is logged in
+    return <div>Please log in to see your favourites.</div>;
+  }
+
   return (
     <div className="min-h-[1800px] relative">
       <Navbar
@@ -53,7 +55,6 @@ const Favourites = () => {
             Your Favourite Properties
           </h2>
 
-          {/* Dropdown for filtering by Rent/Sell */}
           <div className="mb-6">
             <label htmlFor="filter" className="mr-3">
               Show:
@@ -131,7 +132,6 @@ const Favourites = () => {
         </div>
       </section>
 
-      {/* Compare Modal */}
       {compareList.length === 2 && (
         <div className="absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-white p-10 rounded-lg shadow-lg">
@@ -161,4 +161,3 @@ const Favourites = () => {
 };
 
 export default Favourites;
-

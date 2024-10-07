@@ -71,15 +71,19 @@ export default function RentPropertyModal({ modal, toggleModal }) {
   const [role, setRole] = useState(""); // State to track selected role
   const [propertyType, setPropertyType] = useState("");
   const [propertyName, setPropertyName] = useState("");
-  const [numberOfRooms, setNumberOfRooms] = useState("");
+  const [numberOfBaths, setNumberOfBaths] = useState("");
   const [numberOfBeds, setNumberOfBeds] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [agentName, setAgentName] = useState("");
   const [price, setPrice] = useState("");
   const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [lat, setLat] = useState(null);
+  const [lng, setLng] = useState(null);
   const [avaDate, setAvaDate] = useState("");
   const [bond, setBond] = useState("");
   const [images, setImages] = useState([]);
+  const [numCarpark, setNumCarpark] = useState("");
 
   // Manages the opening and closing of the snackbar
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -159,6 +163,13 @@ export default function RentPropertyModal({ modal, toggleModal }) {
     setOpenSnackbar(false);
   };
 
+  const extractCityFromAddress = (address) => {
+    const regex =
+      /,\s*([a-zA-Z\s]+)\s+(?:NSW|VIC|QLD|SA|WA|TAS|ACT|NT)\s+[0-9]{4}/; // Adjust for other states as needed
+    const match = address.match(regex);
+    return match ? match[1].trim() : ""; // Return the captured city or an empty string
+  };
+
   // This is for finding the currently logged in user. Ensures that information is present even after refreshing
   const [user, setUser] = useState(null); // Track the current user explicitly
 
@@ -214,9 +225,17 @@ export default function RentPropertyModal({ modal, toggleModal }) {
 
       await addDoc(collection(db, "Rent"), {
         propertyName,
-        address,
-        numberOfRooms,
+        address: {
+          description: address.description,
+          place_id: address.place_id,
+          structured_formatting: address.structured_formatting,
+          lat: lat, // Latitude
+          lng: lng, // Longitude
+        },
+        city,
         numberOfBeds,
+        numberOfBaths,
+        numCarpark,
         price,
         phoneNumber,
         agentName,
@@ -224,6 +243,9 @@ export default function RentPropertyModal({ modal, toggleModal }) {
         propertyType,
         avaDate,
         images: uploadedImages,
+        RoS: "Rent",
+        availability: true,
+        agentEmail: localStorage.getItem("Email"),
       });
       setOpenSnackbar(true);
       // alert("Property uploaded successfully!");
@@ -280,8 +302,20 @@ export default function RentPropertyModal({ modal, toggleModal }) {
               onChange={(event, newValue) => {
                 setOptions(newValue ? [newValue, ...options] : options);
                 setValue(newValue);
-                // We add the selected address to the useState
                 setAddress(newValue);
+                setCity(extractCityFromAddress(newValue.description));
+
+                const geocoder = new window.google.maps.Geocoder();
+                const request = { placeId: newValue.place_id };
+
+                geocoder.geocode(request, (results, status) => {
+                  if (status === "OK") {
+                    if (results[0]) {
+                      setLat(results[0].geometry.location.lat());
+                      setLng(results[0].geometry.location.lng());
+                    }
+                  }
+                });
               }}
               onInputChange={(event, newInputValue) => {
                 setInputValue(newInputValue);
@@ -347,18 +381,24 @@ export default function RentPropertyModal({ modal, toggleModal }) {
 
             <TextField
               variant="outlined"
-              label="Number of rooms"
-              onChange={(e) => setNumberOfRooms(e.target.value)}
+              label="Number of Beds"
+              onChange={(e) => setNumberOfBeds(e.target.value)}
             ></TextField>
             <TextField
               variant="outlined"
-              label="Number of beds"
-              onChange={(e) => setNumberOfBeds(e.target.value)}
+              label="Number of Baths"
+              onChange={(e) => setNumberOfBaths(e.target.value)}
+            ></TextField>
+            <TextField
+              variant="outlined"
+              label="Number of carparks"
+              onChange={(e) => setNumCarpark(e.target.value)}
             ></TextField>
             <input
               type="file"
               multiple
               accept="image/*"
+              data-testid="img-input"
               onChange={(e) => setImages(Array.from(e.target.files))}
             />
             <TextField
@@ -410,8 +450,9 @@ export default function RentPropertyModal({ modal, toggleModal }) {
               label="Property Type"
             >
               <MenuItem value="house">House</MenuItem>
-              <MenuItem value="semi-detached">Semi-Detached</MenuItem>
               <MenuItem value="apartment">Apartment</MenuItem>
+              <MenuItem value="unit">Unit</MenuItem>
+              <MenuItem value="semi-detached">Semi-Detached</MenuItem>
             </Select>
 
             {/* <FormControlLabel

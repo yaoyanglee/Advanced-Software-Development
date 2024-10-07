@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../Firebase";
 import { doc, getDoc } from "firebase/firestore";
-import "./Login&Signup&reset.css";
+import "./form.css";
 import googleLogo from "../assets/img/googleIcon.png";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -36,7 +36,7 @@ function LogIn() {
       window.location.href = "/";
     } catch (error) {
       console.log(error.message);
-      toast.error("Invalid emaill or password", {
+      toast.error("Invalid email or password", {
         position: "top-center",
       });
     }
@@ -116,7 +116,11 @@ function LogIn() {
               </Link>
             </div>
             <div className="field button-field">
-              <button type="submit" className="pageButton">
+              <button
+                type="submit"
+                className="pageButton"
+                aria-label="email-login"
+              >
                 Login
               </button>
               <ToastContainer />
@@ -136,6 +140,7 @@ function LogIn() {
               className="field google pageButton"
               onClick={LoginWithGoogle}
               disabled={isGoogleSigningIn}
+              aria-label="google-login"
             >
               <img src={googleLogo} alt="Google Icon" className="google-img" />
               <span>Login with Google</span>
