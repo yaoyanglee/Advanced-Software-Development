@@ -39,7 +39,7 @@ function SignUp() {
         });
       }
       console.log("User Registered Successfully!!");
-      toast.success("Sign Up Accounct Successfully!", {
+      toast.success("Sign Up Account Successfully!", {
         position: "top-center",
         autoClose: 5000,
         onClose: () => navigate("/Login"),
@@ -171,7 +171,7 @@ function SignUp() {
                 </label>
               </div>
               <div className="field button-field">
-                <button type="submit" className="pageButton">
+                <button type="submit" className="pageButton" aria-label="signup">
                   Signup
                 </button>
                 <ToastContainer />

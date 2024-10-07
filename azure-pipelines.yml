@@ -29,6 +29,10 @@ steps:
     displayName: "Run Login and Google Login unit test"
 
   - script: |
+      npm test -- src/test/Signup.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+    displayName: "Run user sign up unit test"
+
+  - script: |
       npm test -- src/test/PropertyDetail.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
     displayName: "Run showing property detail unit test"
 
