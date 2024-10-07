@@ -39,7 +39,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "merge-reports": "jrm src/test/junit.xml \"src/test/junit-*.xml\""
+    "merge-reports": "junit-merge src/test/junit-*.xml -o src/test/junit.xml"
   },
   "eslintConfig": {
     "extends": [
