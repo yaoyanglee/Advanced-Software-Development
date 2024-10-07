@@ -21,39 +21,43 @@ steps:
     displayName: "npm install and build"
   
   - script: |
-      npm test -- src/test/Signup.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+      npm test -- src/test/Signup.test.js --watchAll=false --reporters=default --reporters=jest-junit --outputName=junit-signup.xml || exit 1
     displayName: "Run user sign up unit test"
 
   - script: |
-      npm test -- src/test/Login.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+      npm test -- src/test/Login.test.js --watchAll=false --reporters=default --reporters=jest-junit --outputName=junit-login.xml || exit 1
     displayName: "Run Login and Google Login unit test"
 
   - script: |
-      npm test -- src/test/HouseContext.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+      npm test -- src/test/HouseContext.test.js --watchAll=false --reporters=default --reporters=jest-junit --outputName=junit-houseContext.xml || exit 1
     displayName: "Run House context unit test"
   
   - script: |
-      npm test -- src/test/HouseList.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+      npm test -- src/test/HouseList.test.js --watchAll=false --reporters=default --reporters=jest-junit --outputName=junit-houseList.xml || exit 1
     displayName: "Run House List unit test"
 
   - script: |
-      npm test -- src/test/HouseMap.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+      npm test -- src/test/HouseMap.test.js --watchAll=false --reporters=default --reporters=jest-junit --outputName=junit-houseMap.xml || exit 1
     displayName: "Run House Map unit test"
 
   - script: |
-      npm test -- src/test/PropertyDetail.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+      npm test -- src/test/PropertyDetail.test.js --watchAll=false --reporters=default --reporters=jest-junit --outputName=junit-propertyDetail.xml || exit 1
     displayName: "Run showing property detail unit test"
 
   - script: |
-      npm test -- src/test/Favourites.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+      npm test -- src/test/Favourites.test.js --watchAll=false --reporters=default --reporters=jest-junit --outputName=junit-favourites.xml || exit 1
     displayName: "Run Favourites unit test"
 
   - script: |
-      npm test -- src/test/RentProperty.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+      npm test -- src/test/RentProperty.test.js --watchAll=false --reporters=default --reporters=jest-junit --outputName=junit-propertyUpload.xml || exit 1
     displayName: "Run Rental Property Upload tests"
 
+  - script: |
+      cat src/test/junit-*.xml > src/test/junit.xml
+    displayName: "Merge JUnit test results"
+
   - task: PublishTestResults@2
-    displayName: "supply npm test results to pipelines"
+    displayName: "Publish npm test results"
     condition: succeededOrFailed()
     inputs:
       testResultsFiles: "src/test/junit.xml"
