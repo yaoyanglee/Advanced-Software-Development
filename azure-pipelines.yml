@@ -60,6 +60,10 @@ steps:
       npm run merge-reports
     displayName: "Merge JUnit test results"
 
+  - script: |
+      cat src/test/junit.xml
+    displayName: "Display Merged JUnit XML"
+
   - task: PublishTestResults@2
     displayName: "Publish npm test results"
     condition: succeededOrFailed()
