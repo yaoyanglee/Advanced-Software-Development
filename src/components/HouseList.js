@@ -1,18 +1,31 @@
+// HouseList.js
 import React, { useContext } from "react";
 import { HouseContext } from "./HouseContext";
 import { BiBed, BiBath, BiCar } from "react-icons/bi";
-import { RiHeart3Line, RiHeart3Fill } from "react-icons/ri"; // Import both outline and filled heart icons
+import { RiHeart3Line, RiHeart3Fill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { ImSpinner2 } from "react-icons/im";
 import DecimalFormat from "decimal-format";
-import { useFavourites } from "../contexts/FavouritesContext"; // Import the useFavourites hook
+import { useFavourites } from "../contexts/FavouritesContext";
 
 const HouseList = ({ inMapView = false }) => {
   const { houses, loading } = useContext(HouseContext);
-  const { addToFavourites, isInFavourites } = useFavourites(); // Destructure needed functions from useFavourites
+  const { addToFavourites, isInFavourites } = useFavourites();
   const df = new DecimalFormat("#,###,###,###,###");
 
+  // Function to check if email exists in localStorage
+  const isUserLoggedIn = () => {
+    const email = localStorage.getItem('Email'); // Check if email exists in localStorage
+    return email && email.trim() !== ''; // Ensure it's not an empty string
+  };
+
   const handleAddToFavourites = (house) => {
+    if (!isUserLoggedIn()) {
+      // Show an alert prompting the user to log in
+      alert("Please log in or register to add to Favourites");
+      return;
+    }
+    // If the user is logged in, add the house to favorites
     addToFavourites(house);
   };
 
@@ -22,7 +35,6 @@ const HouseList = ({ inMapView = false }) => {
     );
   }
 
-  // Filter out houses where availability is false
   const availableHouses = houses.filter(house => house.availability === true);
 
   if (availableHouses.length < 1) {
@@ -43,20 +55,21 @@ const HouseList = ({ inMapView = false }) => {
                       <br />${df.format(house.price)}{" "}
                       {house.RoS === "Rent" ? "/pw" : ""}
                     </div>
+                    {/* Toggle between filled and outlined heart based on whether the house is in favourites */}
                     {isInFavourites(house.id) ? (
                       <RiHeart3Fill
                         className="text-3xl text-red-500 hover:text-red-600"
                         onClick={(e) => {
-                          e.preventDefault(); // Prevents the Link from being triggered
-                          handleAddToFavourites(house);
+                          e.preventDefault(); // Prevents navigation
+                          handleAddToFavourites(house); // Call the handler
                         }}
                       />
                     ) : (
                       <RiHeart3Line
                         className="text-3xl hover:text-red-500"
                         onClick={(e) => {
-                          e.preventDefault(); // Prevents the Link from being triggered
-                          handleAddToFavourites(house);
+                          e.preventDefault(); // Prevents navigation
+                          handleAddToFavourites(house); // Call the handler
                         }}
                       />
                     )}

@@ -32,10 +32,12 @@ steps:
       npm test -- src/test/PropertyDetail.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
     displayName: "Run showing property detail unit test"
 
+  - script: |
+      npm test -- src/test/Favourites.test.js --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+    displayName: "Run Favourites unit test"
+
   - task: PublishTestResults@2
     displayName: 'supply npm test results to pipelines'
     condition: succeededOrFailed() 
     inputs:
       testResultsFiles: 'src/test/junit.xml'
-
-
