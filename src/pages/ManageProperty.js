@@ -275,7 +275,9 @@ const ManageProperty = () => {
                     className="p-4 border border-gray-300 rounded-md cursor-pointer"
                     onClick={() => handleEnquiryClick(enquiry)}
                   >
-                    Enquiry ID: {enquiry.id}
+                    {enquiry.propertyName}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {enquiry.createdAt?.toDate().toLocaleString()}
                   </div>
                 ))
               ) : (

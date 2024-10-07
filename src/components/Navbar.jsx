@@ -27,14 +27,14 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
       localStorage.removeItem("Email");
       localStorage.removeItem("Name");
       window.dispatchEvent(new Event("storage"));  // Dispatch storage event
-      navigate('/');  // Redirects to home page
+      window.location.replace('/');
     } catch (error) {
       console.error("Sign out error:", error);
     }
   };
 
   const handleBackToHome = () => {
-    navigate('/');  // Navigate to home page
+    window.location.replace('/');
   };
 
   // Handle click for "Favourites"
