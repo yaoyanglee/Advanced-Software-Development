@@ -53,14 +53,7 @@ steps:
     displayName: "Run Rental Property Upload tests"
 
   - script: |
-      cat src/test/junit-signup.xml > src/test/junit.xml
-      cat src/test/junit-login.xml >> src/test/junit.xml
-      cat src/test/junit-houseContext.xml >> src/test/junit.xml
-      cat src/test/junit-houseList.xml >> src/test/junit.xml
-      cat src/test/junit-houseMap.xml >> src/test/junit.xml
-      cat src/test/junit-propertyDetail.xml >> src/test/junit.xml
-      cat src/test/junit-favourites.xml >> src/test/junit.xml
-      cat src/test/junit-propertyUpload.xml >> src/test/junit.xml
+      npm run merge-reports
     displayName: "Merge JUnit test results"
 
   - task: PublishTestResults@2
