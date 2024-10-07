@@ -53,6 +53,10 @@ steps:
     displayName: "Run Rental Property Upload tests"
 
   - script: |
+      npm install -g junit-report-merger
+    displayName: "Install junit-report-merger"
+
+  - script: |
       npm run merge-reports
     displayName: "Merge JUnit test results"
 
