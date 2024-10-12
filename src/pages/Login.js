@@ -27,9 +27,11 @@ function LogIn() {
       const userDoc = await getDoc(doc(db, "Users", user.uid));
       const userData = userDoc.data();
       const userName = userData.Name;
+      const role = userData.Status;
       console.log("User logged in successfully");
       localStorage.setItem("Name", userName);
       localStorage.setItem("Email", email);
+      localStorage.setItem("Role", role);
       toast.success("Logged in successfully!", {
         position: "top-center",
       });
