@@ -1,21 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { auth } from "../Firebase"; // Import Firebase auth
+import { auth, db } from "../Firebase"; // Import Firebase auth
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import { doc, getDoc } from "firebase/firestore";
 
 const Navbar = ({ toggleRentModal, toggleSellModal }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
+  const [userRole, setUserRole] = useState("");
   const navigate = useNavigate();
 
   // Retrieve the values from localStorage when the component mounts
   useEffect(() => {
     const name = localStorage.getItem("Name");
     const email = localStorage.getItem("Email");
+    const role = localStorage.getItem("Role");
+    // console.log("local storage Role: ", localStorage.getItem("Role"));
     setUserName(name);
     setUserEmail(email);
+    setUserRole(role);
   }, []);
+
+  // // Log userRole after it's updated
+  // useEffect(() => {
+  //   console.log("userRole: ", userRole); // This will now show the updated role
+  // }, [userRole]);
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
@@ -23,18 +33,18 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
 
   const handleSignOut = async () => {
     try {
-      await auth.signOut();  // Sign out from Firebase auth
+      await auth.signOut(); // Sign out from Firebase auth
       localStorage.removeItem("Email");
       localStorage.removeItem("Name");
-      window.dispatchEvent(new Event("storage"));  // Dispatch storage event
-      window.location.replace('/');
+      window.dispatchEvent(new Event("storage")); // Dispatch storage event
+      window.location.replace("/");
     } catch (error) {
       console.error("Sign out error:", error);
     }
   };
 
   const handleBackToHome = () => {
-    window.location.replace('/');
+    window.location.replace("/");
   };
 
   // Handle click for "Favourites"
@@ -43,7 +53,7 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
       alert("Please log in to view your favourites.");
       return; // Prevent navigation if user is not logged in
     }
-    navigate("/favourites");  // Navigate to favourites if logged in
+    navigate("/favourites"); // Navigate to favourites if logged in
   };
 
   return (
@@ -55,7 +65,28 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
               91acres
             </p>
           </Link>
-          <Link
+
+          {/* Conditionally render Upload links based on user role */}
+          {userRole !== "Tenant" && (
+            <>
+              <Link
+                className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
+                to=""
+                onClick={toggleSellModal}
+              >
+                Upload for Sale
+              </Link>
+              <Link
+                className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
+                to=""
+                onClick={toggleRentModal}
+              >
+                Upload Rental
+              </Link>
+            </>
+          )}
+
+          {/* <Link
             className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
             to=""
             onClick={toggleSellModal}
@@ -68,10 +99,11 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
             onClick={toggleRentModal}
           >
             Upload Rental
-          </Link>
+          </Link> */}
+
           <button
             className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
-            onClick={handleFavouritesClick}  // Use handleFavouritesClick instead of direct Link
+            onClick={handleFavouritesClick} // Use handleFavouritesClick instead of direct Link
           >
             Favourites
           </button>
@@ -85,7 +117,10 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
 
         {userEmail ? (
           <div className="relative account">
-            <button onClick={toggleDropdown} className="flex items-center gap-2">
+            <button
+              onClick={toggleDropdown}
+              className="flex items-center gap-2"
+            >
               <i className="fas fa-user-circle text-2xl"></i>
               <span className="hidden sm:inline">Account</span>
             </button>
@@ -94,7 +129,9 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
               <div className="absolute right-0 mt-2 w-60 bg-white rounded-lg shadow-lg py-4 z-10">
                 <div className="flex flex-col items-center py-2">
                   <div className="flex items-center justify-center bg-gray-200 w-14 h-14 rounded-full mb-2">
-                    <span className="text-2xl font-bold">{userName.charAt(0)}</span>
+                    <span className="text-2xl font-bold">
+                      {userName.charAt(0)}
+                    </span>
                   </div>
                   <p className="font-bold">{userName}</p>
                   <p className="text-sm text-gray-500">{userEmail}</p>
