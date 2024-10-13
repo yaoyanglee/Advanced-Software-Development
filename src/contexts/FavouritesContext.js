@@ -17,23 +17,20 @@ export const FavouritesProvider = ({ children }) => {
 
   // Fetch the favourites for the currently logged-in user
   useEffect(() => {
-    console.log("Current user:", user);  // Log the current user info
     if (!user) {
-      console.log("No user logged in, clearing favourites...");
-      setFavourites([]); // Clear the favourites
+      setFavourites([]); // Clear the favourites if no user is logged in
       return;
     }
     const fetchFavourites = async () => {
       try {
-        console.log(`Fetching favourites for user: ${user.email}`);
         // Query Firestore to get favourites specific to the logged-in user's email
         const q = query(collection(db, "favourites"), where("userEmail", "==", user.email));
         const querySnapshot = await getDocs(q);
         const favouritesList = querySnapshot.docs.map((doc) => ({
           firestoreId: doc.id, // Firestore document ID
-          ...doc.data(), // Custom data fields
+          ...doc.data(), // Custom data fields, including numberOfBeds and numberOfBaths
         }));
-        setFavourites(favouritesList); // Set favourites for the logged-in user
+        setFavourites(favouritesList);
       } catch (error) {
         console.error("Error fetching favourites:", error);
       }
