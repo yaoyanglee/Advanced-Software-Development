@@ -124,7 +124,7 @@ const CompareModal = ({ compareList, closeCompareModal }) => {
         </div>
 
         {/* Map showing only compared houses */}
-        <div className="map-container">
+        <div className="smallmap-container">
           <APIProvider apiKey={'AIzaSyA52M75qm_GT4k2ZRpQjqPQwDIvVm6YsAk'}>
             <Map
               mapId='eb9ed4134522d2ad'

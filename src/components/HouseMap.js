@@ -49,7 +49,7 @@ const HouseMap = () => {
           );
         } else {
           console.warn(`Invalid lat/lng for house index ${index}:`, house);
-          return null; // Skip rendering if lat/lng are invalid
+          return null; 
         }
       })}
     </>

@@ -11,6 +11,7 @@ import RentPropertyModal from "./RentPropertyModal";
 import SellPropertyModal from "./SellPropertyModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import DecimalFormat from "decimal-format";
 
 const PropertyDetail = () => {
   const { id } = useParams(); // Get the house ID from the URL
@@ -19,6 +20,7 @@ const PropertyDetail = () => {
   const [showEnquireModal, setShowEnquireModal] = useState(false);
   const [rentModal, setRentModal] = useState(false);
   const [sellModal, setSellModal] = useState(false);
+  const df = new DecimalFormat("#,###,###,###,###");
 
   // Enquiry form state
   const [enquiryData, setEnquiryData] = useState({
@@ -32,6 +34,29 @@ const PropertyDetail = () => {
     phone: "",
     postcode: "",
   });
+
+  const [rentBudget, setRentBudget] = useState({
+    income: '',
+    electricityBill: 60,
+    waterBill: 20,
+    internetBill: 60,
+    totalBill: '',
+    taxes: 0,
+    totalBudget: 0,
+  });
+  const [mortgageDetails, setMortgageDetails] = useState({
+    amountBorrowed: "", 
+    interestRate: "", 
+    loanTerm: "", 
+    repaymentFrequency: "Monthly",
+  });
+
+  const [mortgageResult, setMortgageResult] = useState({
+    monthlyPayment: 0,
+    totalPayment: 0,
+  });
+
+  const [selectedTaxRate, setSelectedTaxRate] = useState(16);
 
   const toggleRentModal = () => {
     setRentModal(!rentModal);
@@ -91,6 +116,7 @@ const PropertyDetail = () => {
             ...prevState,
             agentEmail: houseData.agentEmail, // Set agentEmail after house is fetched
           }));
+          rentCalulator(houseData.price);
         } else {
           const sellDocRef = doc(db, "Sell", id);
           const sellDocSnap = await getDoc(sellDocRef);
@@ -102,6 +128,7 @@ const PropertyDetail = () => {
               ...prevState,
               agentEmail: houseData.agentEmail, // Set agentEmail after house is fetched
             }));
+            sellCalculator();
           } else {
             console.log("No such document in both Rent and Sell!");
           }
@@ -112,8 +139,61 @@ const PropertyDetail = () => {
       setLoading(false);
     };
 
+    const rentCalulator = (price) => {
+      const income = parseFloat(rentBudget.income) || 0;
+        const electricityBill = parseFloat(rentBudget.electricityBill) || 0;
+        const waterBill = parseFloat(rentBudget.waterBill) || 0;
+        const internetBill = parseFloat(rentBudget.internetBill) || 0;
+        const totalBill = electricityBill + waterBill + internetBill;
+
+        const taxAmount = (income * selectedTaxRate) / 100;
+        const weeklyBill = (totalBill) / 4;
+        const total = income - weeklyBill - taxAmount - price;
+
+        setRentBudget(prev => ({ ...prev, totalBill: weeklyBill, taxes: taxAmount, totalBudget: total 
+      }));
+    }
+
+    const sellCalculator = () => {
+      const { amountBorrowed, interestRate, loanTerm, fees } = mortgageDetails;
+      const loanAmount = parseFloat(amountBorrowed) || 0;
+      const interestRateAnnual = parseFloat(interestRate) || 0;
+      const loanTermYears = parseInt(loanTerm) || 0;
+
+      if (loanAmount > 0 && interestRateAnnual > 0 && loanTermYears > 0) {
+        const monthlyInterestRate = (interestRateAnnual / 100) / 12;
+        const totalPayments = loanTermYears * 12;
+        const monthlyMortgagePayment = loanAmount * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, totalPayments)) / (Math.pow(1 + monthlyInterestRate, totalPayments) - 1);
+        const totalRepayment = monthlyMortgagePayment * totalPayments;
+
+        setMortgageResult({
+          monthlyPayment: monthlyMortgagePayment.toFixed(2),
+          totalPayment: totalRepayment.toFixed(2),
+        });
+      } else {
+        setMortgageResult({
+          monthlyPayment: 0,
+          totalPayment: 0,
+        });
+      }
+    }
+
     fetchHouseDetails();
-  }, [id]);
+  }, [id, rentBudget.income, rentBudget.electricityBill, rentBudget.waterBill, rentBudget.internetBill, selectedTaxRate, mortgageDetails]);
+
+  const handleRentBudgetChange = (e) => {
+    const { name, value } = e.target;
+    setRentBudget((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleMortgageChange = (e) => {
+    const { name, value } = e.target;
+    setMortgageDetails((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleTaxRateChange = (e) => {
+    setSelectedTaxRate(parseInt(e.target.value));
+  };
 
   if (loading) {
     return <div>Loading...</div>;
@@ -188,6 +268,177 @@ const PropertyDetail = () => {
           </div>
         </div>
       </div>
+      {house.RoS === 'Rent' ? (
+        <div>
+          {/* Budget Calculator Section */}
+          <div className="bg-white p-6 rounded-md shadow-lg max-w-6xl mx-auto my-10">
+            <h2 className="text-2xl font-bold mb-4">Budget Calculator</h2>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Weekly Income:
+                </label>
+                <input
+                  type="number"
+                  name="income"
+                  value={rentBudget.income}
+                  onChange={handleRentBudgetChange}
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  placeholder="Enter weekly income"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Estimated Monthly Bill Breakdown:
+                </label>
+                <div className="mb-2">
+                  <label className="block text-gray-700 text-sm font-bold mb-1">
+                    Electricity:
+                  </label>
+                  <select
+                    name="electricityBill"
+                    value={rentBudget.electricityBill}
+                    onChange={handleRentBudgetChange}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  >
+                    <option value="60">Low - $60</option>
+                    <option value="100">Medium - $100</option>
+                    <option value="200">High - $200</option>
+                  </select>
+                </div>
+                <div className="mb-2">
+                  <label className="block text-gray-700 text-sm font-bold mb-1">
+                    Water:
+                  </label>
+                  <select
+                    name="waterBill"
+                    value={rentBudget.waterBill}
+                    onChange={handleRentBudgetChange}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  >
+                    <option value="20">Low - $20</option>
+                    <option value="40">Medium - $40</option>
+                    <option value="80">High - $80</option>
+                  </select>
+                </div>
+                <div className="mb-2">
+                  <label className="block text-gray-700 text-sm font-bold mb-1">
+                    Internet:
+                  </label>
+                  <select
+                    name="internetBill"
+                    value={rentBudget.internetBill}
+                    onChange={handleRentBudgetChange}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  >
+                    <option value="60">Low - $60</option>
+                    <option value="100">Medium - $100</option>
+                    <option value="150">High - $150</option>
+                  </select>
+                </div>
+                <div className="mb-2">
+                  <label className="block text-gray-700 text-sm font-bold mb-1">
+                    Total Estimated Weekly Bill:
+                  </label>
+                  <input
+                    type="number"
+                    name="bill"
+                    value={rentBudget.totalBill}
+                    readOnly
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    placeholder="Total estimated monthly bill"
+                  />
+                </div>
+              </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Select Tax Rate:
+                  </label>
+                  <select
+                    value={selectedTaxRate}
+                    onChange={handleTaxRateChange}
+                    className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  >
+                    <option value={16}>16%</option>
+                    <option value={30}>30%</option>
+                    <option value={37}>37%</option>
+                    <option value={45}>45%</option>
+                  </select>
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Calculated Taxes:
+                  </label>
+                  <input
+                    type="text"
+                    value={df.format(rentBudget.taxes)}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight bg-gray-100"
+                    readOnly
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Summary:
+                  </label>
+                  <input
+                    type="text"
+                    value={df.format(rentBudget.totalBudget)}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight bg-gray-100"
+                    readOnly
+                  />
+                </div>
+            </div>
+        </div>
+      ) : (
+        <div className="bg-white p-8 rounded-md shadow-lg max-w-6xl mx-auto my-10">
+          <h2 className="text-2xl font-semibold mb-6 text-gray-800">Mortgage Calculator</h2> 
+          <div className="mb-4">
+            <label className="block font-medium text-gray-700 mb-2">Amount Borrowed:</label>
+            <input
+              type="number"
+              name="amountBorrowed"
+              value={mortgageDetails.amountBorrowed}
+              onChange={handleMortgageChange}
+              placeholder="Enter amount borrowed"
+              className="w-full p-2 border border-gray-300 rounded-md bg-gray-100"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block font-medium text-gray-700 mb-2">Interest Rate (%):</label>
+            <input
+              type="number"
+              name="interestRate"
+              step="0.01"
+              value={mortgageDetails.interestRate}
+              onChange={handleMortgageChange}
+              placeholder="Enter interest rate"
+              className="w-full p-2 border border-gray-300 rounded-md bg-gray-100"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block font-medium text-gray-700 mb-2">Loan Term (years):</label>
+            <input
+              type="number"
+              name="loanTerm"
+              value={mortgageDetails.loanTerm}
+              onChange={handleMortgageChange}
+              placeholder="Enter loan term"
+              className="w-full p-2 border border-gray-300 rounded-md bg-gray-100"
+            />
+          </div>
+
+          <h3 className="text-xl font-medium mt-6 mb-4 text-gray-800">Results:</h3>
+          <div className="text-gray-700">
+            <p>Monthly Payment (including fees): 
+              <span className="font-semibold">${df.format(mortgageResult.monthlyPayment)}</span>
+            </p>
+            <p>Total Payment (including fees over {mortgageDetails.loanTerm} years): 
+              <span className="font-semibold">${df.format(mortgageResult.totalPayment)}</span>
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Enquire Modal */}
       {showEnquireModal && (
