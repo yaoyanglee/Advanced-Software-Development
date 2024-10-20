@@ -12,6 +12,13 @@ import SellPropertyModal from "./SellPropertyModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DecimalFormat from "decimal-format";
+import {
+  APIProvider,
+  Map,
+  AdvancedMarker,
+  Pin
+} from '@vis.gl/react-google-maps';
+import '../components/HouseMap.css'
 
 const PropertyDetail = () => {
   const { id } = useParams(); // Get the house ID from the URL
@@ -21,6 +28,8 @@ const PropertyDetail = () => {
   const [rentModal, setRentModal] = useState(false);
   const [sellModal, setSellModal] = useState(false);
   const df = new DecimalFormat("#,###,###,###,###");
+  const lat = house?.address?.lat;
+  const lng = house?.address?.lng;
 
   // Enquiry form state
   const [enquiryData, setEnquiryData] = useState({
@@ -203,6 +212,22 @@ const PropertyDetail = () => {
     return <div>Property not found!</div>;
   }
 
+  const Markers = () => {
+    console.log("Lat:", lat, "Lng:", lng);
+    
+    if (typeof lat === "number" && typeof lng === "number") {
+      return (
+        <AdvancedMarker
+          position={{ lat, lng }} // Ensure lat and lng are numbers
+        >
+          <Pin background={'#FBBC04'} glyphColor={'#000'} borderColor={'#000'} />
+        </AdvancedMarker>
+      );
+    } else {
+      console.warn(`Invalid lat/lng`);
+      return null; 
+    }
+  }
 
   return (
     <section className="container mx-auto my-10 p-5">
@@ -267,6 +292,25 @@ const PropertyDetail = () => {
             </div>
           </div>
         </div>
+        <APIProvider apiKey={'AIzaSyA52M75qm_GT4k2ZRpQjqPQwDIvVm6YsAk'} onLoad={() => console.log('Maps API has loaded.')}>
+          <div className="p-6 mt-6">
+            <h3 className="text-2xl font-semibold mb-4 text-gray-800">Property Location</h3>
+            <div className="map-list-container flex justify-center">
+              <div className="w-full lg:w-2/3 h-96">
+                <Map
+                  mapId="eb9ed4134522d2ad"
+                  defaultZoom={13}
+                  defaultCenter={{ lat: lat, lng: lng }}
+                  onCameraChanged={(ev) =>
+                    console.log('camera changed:', ev.detail.center, 'zoom:', ev.detail.zoom)
+                  }
+                >
+                  <Markers />
+                </Map>
+              </div>
+            </div>
+          </div>
+        </APIProvider>
       </div>
       {house.RoS === 'Rent' ? (
         <div>

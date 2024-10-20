@@ -3,19 +3,16 @@ import {
   APIProvider,
   Map,
   AdvancedMarker,
-  MapCameraChangedEvent,
   Pin
 } from '@vis.gl/react-google-maps';
 import './HouseMap.css'
 import { HouseContext } from "./HouseContext";
 import { ImSpinner2 } from "react-icons/im";
 import DecimalFormat from "decimal-format";
-import { useFavourites } from "../contexts/FavouritesContext";
 import HouseList from "./HouseList";
 
 const HouseMap = () => {
   const { houses, loading } = useContext(HouseContext);
-  const { addToFavourites, isInFavourites } = useFavourites(); // Destructure needed functions from useFavourites
   const df = new DecimalFormat("#,###,###,###,###");
 
   if (loading) {
@@ -33,11 +30,8 @@ const HouseMap = () => {
       {houses.map((house, index) => {
         const lat = house?.address?.lat;
         const lng = house?.address?.lng;
-  
-        // Log to ensure the lat and lng are numbers
         console.log("Lat:", lat, "Lng:", lng);
-  
-        // Only render the marker if lat and lng are valid numbers
+        
         if (typeof lat === "number" && typeof lng === "number") {
           return (
             <AdvancedMarker
