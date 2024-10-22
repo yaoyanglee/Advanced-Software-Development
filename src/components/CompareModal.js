@@ -11,7 +11,7 @@ const CompareModal = ({ compareList, closeCompareModal }) => {
         const lat = house?.address?.lat;
         const lng = house?.address?.lng;
         const colors = ['#FF0000', '#0000FF']; // Red for the first, Blue for the second
-  
+
         if (typeof lat === "number" && typeof lng === "number") {
           return (
             <AdvancedMarker
@@ -27,79 +27,60 @@ const CompareModal = ({ compareList, closeCompareModal }) => {
     </>
   );
 
-  // Prepare data for ApexCharts with dual Y-axes
+  // Prepare data for ApexCharts Radar chart
   const chartOptions = {
     chart: {
-      type: 'bar',
+      type: 'radar',
       height: 350,
     },
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: '55%',
-        endingShape: 'rounded',
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
     xaxis: {
-      categories: compareList.map((house) => house.propertyName),
+      categories: ['Price', 'Rooms', 'Baths'], // Metrics for comparison
     },
-    yaxis: [
-      {
-        title: {
-          text: 'Price (in $)',
-        },
-        labels: {
-          formatter: function (val) {
-            return `$${val}`;
-          },
-        },
-      },
-      {
-        opposite: true, // This moves the second Y-axis to the right
-        title: {
-          text: 'Rooms and Baths',
-        },
-        labels: {
-          formatter: function (val) {
-            return `${val}`;
-          },
-        },
-        min: 0, // Ensure the axis starts at 0
-        max: 5, // Adjust max value for better visibility of rooms and baths
-      },
-    ],
+    yaxis: {
+      labels: {
+        formatter: function (val) {
+          return val.toString();
+        }
+      }
+    },
+    plotOptions: {
+      radar: {
+        size: 140,
+        polygons: {
+          strokeColor: '#e9e9e9',
+          fill: {
+            colors: ['#f8f8f8', '#fff']
+          }
+        }
+      }
+    },
+    colors: ['#FF0000', '#0000FF'], // Customize colors for each property
     fill: {
-      opacity: 1,
+      opacity: 0.7,
     },
-    colors: ['#1E90FF', '#00C49F', '#FF8042'], // Customize colors
+    markers: {
+      size: 3,
+    },
   };
 
-  const chartSeries = [
-    {
-      name: 'Price',
-      data: compareList.map((house) => parseFloat(house.price)), // Convert price to float
-      type: 'bar',
-    },
-    {
-      name: 'Rooms',
-      data: compareList.map((house) => parseInt(house.numberOfBeds, 10)), // Convert rooms to integer
-      type: 'line',
-      yAxisIndex: 1,
-    },
-    {
-      name: 'Baths',
-      data: compareList.map((house) => parseInt(house.numberOfBaths, 10)), // Convert baths to integer
-      type: 'line',
-      yAxisIndex: 1,
-    },
-  ];
+  // Radar chart series data for Price, Rooms, and Baths
+  const chartSeries = compareList.map((house, index) => ({
+    name: house.propertyName,
+    data: [
+      parseFloat(house.price),           // Price
+      parseFloat(house.numberOfBeds),    // Rooms
+      parseFloat(house.numberOfBaths),   // Baths
+    ],
+  }));
 
   return (
     <div className="compare-modal">
       <div className="modal-content">
+        {/* X Close Button in the top-right corner */}
+        <button className="close-modal-x" onClick={closeCompareModal}>
+          &times;
+        </button>
+        
         <h3 className="modal-title">Compare Properties</h3>
         <div className="property-details">
           {compareList.map((house, index) => (
@@ -113,15 +94,17 @@ const CompareModal = ({ compareList, closeCompareModal }) => {
           ))}
         </div>
 
-        {/* Price and Rooms/Baths Comparison Graph using ApexCharts */}
+        {/* Radar Chart for Price, Rooms, and Baths Comparison */}
         <div className="chart-container">
           <Chart
             options={chartOptions}
             series={chartSeries}
-            type="bar"
+            type="radar"
             height={350}
           />
         </div>
+
+        <h1>Comparison Map</h1>
 
         {/* Map showing only compared houses */}
         <div className="map-container">
@@ -131,15 +114,24 @@ const CompareModal = ({ compareList, closeCompareModal }) => {
               defaultZoom={13}
               defaultCenter={{ lat: compareList[0]?.address.lat, lng: compareList[0]?.address.lng }}
               className="google-map"
+              style={{ height: '500px', position: 'relative' }} // Ensure position relative for legend
             >
               <Markers />
             </Map>
+
+            {/* Map Legend inside the map */}
+            <div className="map-legend">
+              <div className="legend-item">
+                <span className="legend-color" style={{ backgroundColor: '#FF0000' }}></span> {/* Red Marker */}
+                <span>54 Formosa Street</span>
+              </div>
+              <div className="legend-item">
+                <span className="legend-color" style={{ backgroundColor: '#0000FF' }}></span> {/* Blue Marker */}
+                <span>64/209 Harris Street</span>
+              </div>
+            </div>
           </APIProvider>
         </div>
-
-        <button className="close-button" onClick={closeCompareModal}>
-          Close Comparison
-        </button>
       </div>
     </div>
   );
