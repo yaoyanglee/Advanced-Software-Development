@@ -66,10 +66,10 @@ const ManageProperty = () => {
 
       if (filterOption === "My Enquire") {
         // Query for My Enquiries (email matches)
-        q = query(enquiriesRef, where("email", "==", email)); 
+        q = query(enquiriesRef, where("senderEmail", "==", email)); 
       } else if (filterOption === "Send to me") {
         // Query for Enquiries sent to the current user's agentEmail
-        q = query(enquiriesRef, where("agentEmail", "==", email)); 
+        q = query(enquiriesRef, where("receiverEmail", "==", email)); 
       }
 
       const querySnapshot = await getDocs(q);
@@ -184,6 +184,58 @@ const ManageProperty = () => {
     setEditMode(!editMode); // Toggle between edit and view mode
   };
 
+  const approveEnquiry = () => {
+    if (selectedEnquiry) {
+      const docRef = doc(db, "Enquiries", selectedEnquiry.id);
+
+      try {
+        // Update the enquiry status in Firestore
+        updateDoc(docRef, { status: "Approved" });
+        setFilteredEnquiries((prevEnquiries) =>
+          prevEnquiries.map((enq) =>
+            enq.id === selectedEnquiry.id ? { ...enq, status:"Approved" } : enq
+          )
+        );
+        setSelectedEnquiry(null);
+        toast.success(`Approve the enquire!`, {
+          position: "top-center",
+          autoClose: 3000,
+        });
+      } catch (error) {
+        toast.error("Failed to update enquiry status!", {
+          position: "top-center",
+          autoClose: 3000,
+        });
+      }
+    }
+  };
+
+  const rejectEnquiry = () => {
+    if (selectedEnquiry) {
+      const docRef = doc(db, "Enquiries", selectedEnquiry.id);
+
+      try {
+        // Update the enquiry status in Firestore
+        updateDoc(docRef, { status: "Rejected" });
+        setFilteredEnquiries((prevEnquiries) =>
+          prevEnquiries.map((enq) =>
+            enq.id === selectedEnquiry.id ? { ...enq, status: "Rejected" } : enq
+          )
+        );
+        setSelectedEnquiry(null);
+        toast.success(`Reject the enquire!`, {
+          position: "top-center",
+          autoClose: 3000,
+        });
+      } catch (error) {
+        toast.error("Failed to update enquiry status!", {
+          position: "top-center",
+          autoClose: 3000,
+        });
+      }
+    }
+  };
+
   return (
     <div>
       <Navbar
@@ -284,9 +336,20 @@ const ManageProperty = () => {
                     className="p-4 border border-gray-300 rounded-md cursor-pointer"
                     onClick={() => handleEnquiryClick(enquiry)}
                   >
-                    {enquiry.propertyName}
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    {enquiry.createdAt?.toDate().toLocaleString()}
+                    <div className="flex justify-between items-center">
+                      {enquiry.propertyName}
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                      {enquiry.createdAt?.toDate().toLocaleString()}
+                      <span
+                        className={`ml-4 px-3 py-1 rounded-full text-white font-semibold
+                          ${enquiry.status === "Pending" ? "bg-yellow-500" : ""}
+                          ${enquiry.status === "Approved" ? "bg-green-500" : ""}
+                          ${enquiry.status === "Rejected" ? "bg-red-500" : ""}
+                        `}
+                      >
+                        {enquiry.status}
+                      </span>
+                    </div>
                   </div>
                 ))
               ) : (
@@ -294,17 +357,27 @@ const ManageProperty = () => {
               )}
             </div>
 
+
             {/* Pop-up modal to show enquiry details */}
             {selectedEnquiry && (
               <div className="fixed z-10 inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75">
-                <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+                <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full relative">
+                  <button
+                    className="absolute top-4 right-4 bg-gray-200 text-gray-700 px-3 py-1 rounded-md hover:bg-gray-300 transition"
+                    onClick={() => setSelectedEnquiry(null)}
+                  >
+                    Close
+                  </button>
+                  
                   <h2 className="text-xl font-semibold mb-4">Enquiry Details</h2>
                   <p><strong>Enquiry Time:</strong> {selectedEnquiry.createdAt?.toDate().toLocaleString()}</p>
                   <p><strong>Name:</strong> {selectedEnquiry.name}</p>
                   <p><strong>Email:</strong> {selectedEnquiry.email}</p>
-                  {setSelectedEnquiry.phone !== "" &&(
+                  
+                  {selectedEnquiry.phone && (
                     <p><strong>Phone:</strong> {selectedEnquiry.phone}</p>
                   )}
+              
                   <p><strong>Postcode:</strong> {selectedEnquiry.postcode}</p>
                   <p><strong>Property Name:</strong> {selectedEnquiry.propertyName}</p>
                   <p><strong>Enquiry Type(s):</strong></p>
@@ -315,12 +388,24 @@ const ManageProperty = () => {
                     {selectedEnquiry.ratesFees && <li>Rates and Fees</li>}
                   </ul>
                   <p><strong>Message:</strong> {selectedEnquiry.message}</p>
-                  <button
-                    className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md"
-                    onClick={() => setSelectedEnquiry(null)}
-                  >
-                    Close
-                  </button>
+              
+                  {filterOption === "Send to me" && (
+                    <div className="flex gap-4 mt-4">
+                      <button
+                        className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition"
+                        onClick={approveEnquiry}
+                      >
+                        Approve
+                      </button>
+                      
+                      <button
+                        className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
+                        onClick={rejectEnquiry}
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

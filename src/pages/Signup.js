@@ -13,8 +13,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function SignUp() {
-  // const auth = getAuth(app);
-  // const db = getFirestore(app);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -45,36 +43,20 @@ function SignUp() {
         onClose: () => navigate("/Login"),
       });
     } catch (error) {
-      console.log(error.message);
-      toast.error("The user has already registered!", {
+      let errorMessage = "";
+      if (error.message.includes("auth/weak-password")) {
+        errorMessage = "Password should be at least 6 characters";
+      } else if (error.message.includes("auth/invalid-email")){
+        errorMessage = "Invalid email used for sign up";
+      } else {
+        errorMessage = "Email already be used for sign up";
+      }
+      toast.error(errorMessage, {
         position: "top-center",
       });
     }
   };
-
-  // const LoginWithGoogle = async () => {
-  //   if (isGoogleSigningIn) return; // Prevent multiple popup requests
-  //   setIsGoogleSigningIn(true); // Set flag to indicate the request is in progress
-
-  //   try {
-  //     const provider = new GoogleAuthProvider();
-  //     const result = await signInWithPopup(auth, provider);
-  //     console.log(result);
-  //     if (result.user) {
-  //       toast.success("Logged in successfully!", {
-  //         position: "top-center",
-  //       });
-  //       window.location.href = "/";
-  //     }
-  //   } catch (error) {
-  //     console.error(error.message);
-  //     toast.error(error.message, {
-  //       position: "top-center",
-  //     });
-  //   } finally {
-  //     setIsGoogleSigningIn(false); // Reset flag after the request is completed
-  //   }
-  // };
+  
 
   return (
     <div

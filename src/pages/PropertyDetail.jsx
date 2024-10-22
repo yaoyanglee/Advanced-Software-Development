@@ -25,6 +25,7 @@ const PropertyDetail = () => {
   const [house, setHouse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showEnquireModal, setShowEnquireModal] = useState(false);
+  const [senderEmail, setSenderEmail] = useState("");
   const [rentModal, setRentModal] = useState(false);
   const [sellModal, setSellModal] = useState(false);
   const df = new DecimalFormat("#,###,###,###,###");
@@ -39,7 +40,7 @@ const PropertyDetail = () => {
     propertySize: false,
     message: "",
     name: "",
-    email: "",
+    senderEmail: "",
     phone: "",
     postcode: "",
   });
@@ -80,17 +81,26 @@ const PropertyDetail = () => {
   };
 
   const handleEnquireClick = async () => {
-    const storedEmail = localStorage.getItem("Email"); // Get email from localStorage
+    const { name, senderEmail, postcode } = enquiryData;
+  
+    // Check if required fields are filled
+    if (!name || !senderEmail || !postcode) {
+      toast.error("Please fill out all required fields", {
+        position: "top-center",
+      });
+      return; // Prevent form submission if validation fails
+    }
+  
     const enquiryCollectionRef = collection(db, "Enquiries");
-
+  
     try {
       await addDoc(enquiryCollectionRef, {
         ...enquiryData,
-        email: storedEmail || enquiryData.email, // Use email from localStorage if available
-        agentEmail: house.agentEmail, // Ensure agentEmail is included
+        receiverEmail: house.agentEmail, // Ensure agentEmail is included
         propertyId: id, // Store the property ID for reference
         propertyName: house.propertyName,
         createdAt: new Date(),
+        status: "Pending",
       });
       toast.success("Enquiry submitted!", {
         position: "top-center",
@@ -103,6 +113,7 @@ const PropertyDetail = () => {
       });
     }
   };
+  
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -123,7 +134,6 @@ const PropertyDetail = () => {
           setHouse(houseData);
           setEnquiryData((prevState) => ({
             ...prevState,
-            agentEmail: houseData.agentEmail, // Set agentEmail after house is fetched
           }));
           rentCalulator(houseData.price);
         } else {
@@ -228,6 +238,23 @@ const PropertyDetail = () => {
       return null; 
     }
   }
+
+  const handleCancelEnquiry = () => {
+    // Reset the enquiry data when cancelling
+    setEnquiryData({
+      priceGuide: false,
+      inspectionTimes: false,
+      ratesFees: false,
+      propertySize: false,
+      message: "",
+      name: "",
+      senderEmail: "",
+      phone: "",
+      postcode: "",
+    });
+    setShowEnquireModal(false); // Close the modal
+  };
+  
 
   return (
     <section className="container mx-auto my-10 p-5">
@@ -562,8 +589,8 @@ const PropertyDetail = () => {
                 <label className="block text-gray-700 mb-2">Email *</label>
                 <input
                   type="email"
-                  name="email"
-                  value={enquiryData.email}
+                  name="senderEmail"
+                  value={enquiryData.senderEmail}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-violet-600"
                   placeholder="Your email"
@@ -600,7 +627,7 @@ const PropertyDetail = () => {
 
             <button 
               className="w-full bg-gray-200 text-black py-3 rounded-lg hover:bg-gray-300 transition"
-              onClick={() => setShowEnquireModal(false)}  // Close the modal
+              onClick={handleCancelEnquiry}  // Close the modal
             >
               Cancel
             </button>

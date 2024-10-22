@@ -36,6 +36,7 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
       await auth.signOut(); // Sign out from Firebase auth
       localStorage.removeItem("Email");
       localStorage.removeItem("Name");
+      localStorage.removeItem("Role");
       window.dispatchEvent(new Event("storage")); // Dispatch storage event
       window.location.replace("/");
     } catch (error) {
