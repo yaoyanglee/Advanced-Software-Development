@@ -7,7 +7,7 @@ import Reset from "./pages/Reset.js";
 import GoogleSignUp from "./pages/googleSignUp.js";
 import Favourites from "./pages/Favourites";
 import Account from "./pages/Account.js";
-import PropertyDetail from "./pages/PropertyDetail.js";
+import PropertyDetail from "./pages/PropertyDetail.jsx";
 import ManageProperty from "./pages/ManageProperty.js";
 import { AuthProvider } from "./contexts/AuthContext";
 import { FavouritesProvider } from "./contexts/FavouritesContext";
