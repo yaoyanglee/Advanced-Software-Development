@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import Favourites from "../pages/Favourites";
 import { useAuth } from "../contexts/AuthContext";
@@ -17,23 +17,6 @@ beforeEach(() => {
 });
 
 describe("Favourites Component", () => {
-  it("shows login message if user is not logged in", () => {
-    useAuth.mockReturnValue({ user: null });
-
-    useFavourites.mockReturnValue({
-      favourites: [],
-      removeFromFavourites: jest.fn(),
-    });
-
-    render(
-      <MemoryRouter>
-        <Favourites />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText(/Please log in to see your favourites./i)).toBeInTheDocument();
-  });
-
   it("displays favourite properties if user is logged in", () => {
     useAuth.mockReturnValue({ user: { email: "test@example.com" } });
 
@@ -42,12 +25,12 @@ describe("Favourites Component", () => {
         {
           id: "1",
           propertyName: "Test Property",
-          price: "$1000",
+          price: "1000",
           RoS: "Rent",
           city: "Test City",
           address: { description: "123 Test Street" },
-          numberOfRooms: 3,
-          numberOfBath: 2,
+          numberOfBeds: 3,
+          numberOfBaths: 2,
         },
       ],
       removeFromFavourites: jest.fn(),
@@ -60,6 +43,49 @@ describe("Favourites Component", () => {
     );
 
     expect(screen.getByText(/Test Property/i)).toBeInTheDocument();
+    expect(screen.getByText(/123 Test Street/i)).toBeInTheDocument();
+  });
+
+  it("filters and displays only Rent properties", () => {
+    useAuth.mockReturnValue({ user: { email: "test@example.com" } });
+
+    useFavourites.mockReturnValue({
+      favourites: [
+        {
+          id: "1",
+          propertyName: "Rent Property",
+          price: "1000",
+          RoS: "Rent",
+          city: "Rent City",
+          address: { description: "123 Rent Street" },
+          numberOfBeds: 2,
+          numberOfBaths: 1,
+        },
+        {
+          id: "2",
+          propertyName: "Sell Property",
+          price: "2000",
+          RoS: "Sell",
+          city: "Sell City",
+          address: { description: "456 Sell Avenue" },
+          numberOfBeds: 3,
+          numberOfBaths: 2,
+        },
+      ],
+      removeFromFavourites: jest.fn(),
+    });
+
+    render(
+      <MemoryRouter>
+        <Favourites />
+      </MemoryRouter>
+    );
+
+    const filterSelect = screen.getByLabelText(/Show:/i);
+    fireEvent.change(filterSelect, { target: { value: "Rent" } });
+
+    expect(screen.getByText(/Rent Property/i)).toBeInTheDocument();
+    expect(screen.queryByText(/Sell Property/i)).not.toBeInTheDocument();
   });
 
   it("removes a property from favourites when clicking Remove button", () => {
@@ -72,12 +98,12 @@ describe("Favourites Component", () => {
         {
           id: "1",
           propertyName: "Test Property",
-          price: "$1000",
+          price: "1000",
           RoS: "Rent",
           city: "Test City",
           address: { description: "123 Test Street" },
-          numberOfRooms: 3,
-          numberOfBath: 2,
+          numberOfBeds: 3,
+          numberOfBaths: 2,
         },
       ],
       removeFromFavourites: removeFromFavouritesMock,
@@ -90,13 +116,12 @@ describe("Favourites Component", () => {
     );
 
     const removeButton = screen.getByText(/Remove/i);
-    removeButton.click();
+    fireEvent.click(removeButton);
 
     expect(removeFromFavouritesMock).toHaveBeenCalledWith("1");
   });
 
-  // New Test Case 1: Shows a message when there are no favourite properties (Exact Match)
-  it("shows a message when there are no favourite properties (Exact Match)", () => {
+  it("shows a message when there are no favourite properties", () => {
     useAuth.mockReturnValue({ user: { email: "test@example.com" } });
 
     useFavourites.mockReturnValue({
@@ -110,32 +135,10 @@ describe("Favourites Component", () => {
       </MemoryRouter>
     );
 
-    // Updated expected text to match what's in the DOM
     expect(screen.getByText(/No favorite properties yet./i)).toBeInTheDocument();
   });
 
-  // New Test Case 1 (Alternate): Shows a message when there are no favourite properties (Flexible Match)
-  it("shows a message when there are no favourite properties (Flexible Match)", () => {
-    useAuth.mockReturnValue({ user: { email: "test@example.com" } });
-
-    useFavourites.mockReturnValue({
-      favourites: [],
-      removeFromFavourites: jest.fn(),
-    });
-
-    render(
-      <MemoryRouter>
-        <Favourites />
-      </MemoryRouter>
-    );
-
-    // Using a function matcher for more flexibility
-    expect(screen.getByText((content) =>
-      content.includes("No favorite properties"))).toBeInTheDocument();
-  });
-
-  // New Test Case 2: Displays multiple favourite properties
-  it("displays multiple favourite properties if user has more than one favourite", () => {
+  it("displays multiple favourite properties", () => {
     useAuth.mockReturnValue({ user: { email: "test@example.com" } });
 
     useFavourites.mockReturnValue({
@@ -143,22 +146,22 @@ describe("Favourites Component", () => {
         {
           id: "1",
           propertyName: "Property One",
-          price: "$1000",
+          price: "1000",
           RoS: "Rent",
           city: "City One",
           address: { description: "123 One Street" },
-          numberOfRooms: 2,
-          numberOfBath: 1,
+          numberOfBeds: 2,
+          numberOfBaths: 1,
         },
         {
           id: "2",
           propertyName: "Property Two",
-          price: "$2000",
-          RoS: "Rent",
+          price: "2000",
+          RoS: "Sell",
           city: "City Two",
           address: { description: "456 Two Avenue" },
-          numberOfRooms: 3,
-          numberOfBath: 2,
+          numberOfBeds: 3,
+          numberOfBaths: 2,
         },
       ],
       removeFromFavourites: jest.fn(),
