@@ -12,6 +12,8 @@ import SellPropertyModal from "./SellPropertyModal";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DecimalFormat from "decimal-format";
+import Rating from "../components/Rating";
+
 import {
   APIProvider,
   Map,
@@ -292,6 +294,7 @@ const PropertyDetail = () => {
             <p className="text-xl font-semibold text-violet-600 mb-4">
               ${house.price} {house.RoS === "Rent" ? "/pw" : ""}
             </p>
+            <Rating propertyId={id} /> {/* Rating Component */}
           </div>
 
           {/* Right Column: Agent Info */}
@@ -319,7 +322,7 @@ const PropertyDetail = () => {
             </div>
           </div>
         </div>
-        <APIProvider apiKey={'AIzaSyA52M75qm_GT4k2ZRpQjqPQwDIvVm6YsAk'} onLoad={() => console.log('Maps API has loaded.')}>
+        <APIProvider apiKey={'YOUR_GOOGLE_MAPS_API_KEY'} onLoad={() => console.log('Maps API has loaded.')}>
           <div className="p-6 mt-6">
             <h3 className="text-2xl font-semibold mb-4 text-gray-800">Property Location</h3>
             <div className="map-list-container flex justify-center">

@@ -1,3 +1,4 @@
+// App.js
 import React, { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
@@ -11,6 +12,7 @@ import PropertyDetail from "./pages/PropertyDetail.jsx";
 import ManageProperty from "./pages/ManageProperty.js";
 import { AuthProvider } from "./contexts/AuthContext";
 import { FavouritesProvider } from "./contexts/FavouritesContext";
+import { RatingProvider } from "./contexts/RatingContext";
 
 function App() {
   const [rentModal, setRentModal] = useState(false);
@@ -25,17 +27,19 @@ function App() {
   return (
     <AuthProvider>
       <FavouritesProvider>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/Login" element={<Login />} />
-          <Route path="/Signup" element={<Signup />} />
-          <Route path="/Reset" element={<Reset />} />
-          <Route path="/GoogleSignUp" element={<GoogleSignUp />} />
-          <Route path="/favourites" element={<Favourites />} />
-          <Route path="/Account" element={<Account />} />
-          <Route path="/PropertyDetail/:id" element={<PropertyDetail />} />
-          <Route path="/ManageProperty" element={<ManageProperty />} />
-        </Routes>
+        <RatingProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/Login" element={<Login />} />
+            <Route path="/Signup" element={<Signup />} />
+            <Route path="/Reset" element={<Reset />} />
+            <Route path="/GoogleSignUp" element={<GoogleSignUp />} />
+            <Route path="/favourites" element={<Favourites />} />
+            <Route path="/Account" element={<Account />} />
+            <Route path="/PropertyDetail/:id" element={<PropertyDetail />} />
+            <Route path="/ManageProperty" element={<ManageProperty />} />
+          </Routes>
+        </RatingProvider>
       </FavouritesProvider>
     </AuthProvider>
   );
