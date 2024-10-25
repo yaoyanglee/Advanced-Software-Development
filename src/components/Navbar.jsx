@@ -136,6 +136,8 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
                   </div>
                   <p className="font-bold">{userName}</p>
                   <p className="text-sm text-gray-500">{userEmail}</p>
+                  <p className="text-sm text-gray-400">{userRole}</p>{" "}
+                  {/* Display user status */}
                 </div>
 
                 <Link
