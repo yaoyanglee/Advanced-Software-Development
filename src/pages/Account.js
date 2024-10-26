@@ -255,10 +255,7 @@ const Account = () => {
 
   return (
     <div className="min-h-[1800px] ">
-      <Navbar
-        toggleRentModal={toggleRentModal}
-        toggleSellModal={toggleSellModal}
-      />
+     
       <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
       <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} />
 

@@ -26,10 +26,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
-      <Navbar
-        toggleRentModal={toggleRentModal}
-        toggleSellModal={toggleSellModal}
-      />
+     
       <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
       <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} />
     

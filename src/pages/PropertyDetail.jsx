@@ -260,10 +260,7 @@ const PropertyDetail = () => {
 
   return (
     <section className="container mx-auto my-10 p-5">
-      <Navbar
-        toggleRentModal={toggleRentModal}
-        toggleSellModal={toggleSellModal}
-      />
+     
       <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
       <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} />
 
