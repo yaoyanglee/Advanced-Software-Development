@@ -13,6 +13,22 @@ const Help = () => {
   const [houses, setHouses] = useState([]);
   const [error, setError] = useState("");
 
+  const TOWN_HALL_COORDS = { lat: -33.87365, lng: 151.20689 };
+
+  const calculateDistance = (lat1, lng1, lat2, lng2) => {
+    const R = 6371;
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLng = ((lng2 - lng1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) *
+        Math.cos((lat2 * Math.PI) / 180) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
   const handleTotalPeopleChange = (e) => {
     const value = parseInt(e.target.value);
     setTotalPeople(value);
@@ -68,7 +84,6 @@ const Help = () => {
 
     setRecommendedBedrooms(bedrooms);
 
-    // Query the Rent collection for matching number of beds
     const housesRef = collection(db, "Rent");
     const q = query(housesRef, where("numberOfBeds", "==", bedrooms.toString()));
 
@@ -81,10 +96,25 @@ const Help = () => {
           querySnapshot.docs.map(async (doc) => {
             const houseData = doc.data();
             const averageRating = await fetchAverageRating(doc.id);
-            return { id: doc.id, ...houseData, averageRating };
+
+            // Calculate distance from Town Hall
+            const distance = calculateDistance(
+              TOWN_HALL_COORDS.lat,
+              TOWN_HALL_COORDS.lng,
+              houseData.address.lat,
+              houseData.address.lng
+            );
+
+            return { id: doc.id, ...houseData, averageRating, distanceFromTownHall: distance };
           })
         );
-        setHouses(fetchedHouses);
+
+        // Filter houses based on the selected range
+        const filteredHouses = fetchedHouses.filter(
+          (house) => house.distanceFromTownHall <= range
+        );
+
+        setHouses(filteredHouses);
       }
     } catch (error) {
       console.error("Error fetching houses:", error);
