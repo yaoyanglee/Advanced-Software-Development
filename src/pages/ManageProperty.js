@@ -238,7 +238,10 @@ const ManageProperty = () => {
 
   return (
     <div>
-      
+      <Navbar
+        toggleRentModal={toggleRentModal}
+        toggleSellModal={toggleSellModal}
+      />
       <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
       <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} />
 

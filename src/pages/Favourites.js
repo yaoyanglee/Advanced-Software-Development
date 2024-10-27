@@ -48,7 +48,10 @@ const Favourites = () => {
 
   return (
     <div className={`min-h-[1800px] relative ${showCompareModal ? "blur-background" : ""}`}>
-   
+      <Navbar
+        toggleRentModal={toggleRentModal}
+        toggleSellModal={toggleSellModal}
+      />
       <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
       <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} />
 

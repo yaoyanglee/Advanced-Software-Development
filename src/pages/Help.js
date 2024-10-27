@@ -3,6 +3,9 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../Firebase";
 import { BiBed, BiBath, BiCar } from "react-icons/bi";
 import ReactStars from "react-rating-stars-component";
+import Navbar from '../components/Navbar'; 
+import RentPropertyModal from "./RentPropertyModal";
+import SellPropertyModal from "./SellPropertyModal";
 
 const Help = () => {
   const [totalPeople, setTotalPeople] = useState(1);
@@ -12,8 +15,18 @@ const Help = () => {
   const [recommendedBedrooms, setRecommendedBedrooms] = useState(null);
   const [houses, setHouses] = useState([]);
   const [error, setError] = useState("");
+  const [rentModal, setRentModal] = useState(false);
+  const [sellModal, setSellModal] = useState(false);
 
   const TOWN_HALL_COORDS = { lat: -33.87365, lng: 151.20689 };
+
+  const toggleRentModal = () => { 
+    setRentModal(!rentModal);
+  };
+
+  const toggleSellModal = () => {
+    setSellModal(!sellModal);
+  };
 
   const calculateDistance = (lat1, lng1, lat2, lng2) => {
     const R = 6371;
@@ -124,6 +137,12 @@ const Help = () => {
 
   return (
     <div className="p-4">
+      <Navbar
+        toggleRentModal={toggleRentModal}
+        toggleSellModal={toggleSellModal}
+      />
+      <RentPropertyModal modal={rentModal} toggleModal={toggleRentModal} />
+      <SellPropertyModal modal={sellModal} toggleModal={toggleSellModal} />
       <h2 className="text-xl font-bold mb-4">What are you looking for?</h2>
 
       <div className="mb-4">

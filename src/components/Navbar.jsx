@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth } from "../Firebase";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import Help from "../pages/Help"; // Adjusted path based on your folder structure
+import CryptoJS from "crypto-js";
 
 
 const Navbar = ({ toggleRentModal, toggleSellModal }) => {
@@ -11,6 +11,11 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
   const [userEmail, setUserEmail] = useState("");
   const [userRole, setUserRole] = useState("");
   const navigate = useNavigate();
+  const secretKey = "N@N6d3L!t7Z^b9m$Wq3J2vF8a&K*eQ1r";
+
+  const encryptPath = (path) => {
+    return CryptoJS.AES.encrypt(path, secretKey).toString();
+  };
 
   useEffect(() => {
     const name = localStorage.getItem("Name");
@@ -43,7 +48,31 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
       alert("Please log in to view your favourites.");
       return;
     }
-    navigate("/favourites");
+    const encryptedPath = encryptPath("Favourites");
+    navigate(`/${encryptedPath}`);
+  };
+
+  const handleAccountClick = () => {
+    if (!userEmail) {
+      alert("Please log in to view your account.");
+      return;
+    }
+    const encryptedPath = encryptPath("Account");
+    navigate(`/${encryptedPath}`);
+  };
+
+  const handleManagePropertyClick = () => {
+    if (!userEmail) {
+      alert("Please log in to manage properties.");
+      return;
+    }
+    const encryptedPath = encryptPath("ManageProperty");
+    navigate(`/${encryptedPath}`);
+  };
+
+  const handleHelpClick = () => {
+    const encryptedPath = encryptPath("Help");
+    navigate(`/${encryptedPath}`);
   };
 
   return (
@@ -56,7 +85,7 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
             </p>
           </Link>
 
-          {userRole !== "Tenant" && (
+          {(userRole && userRole !== "Tenant") && (
             <>
               <Link
                 className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
@@ -75,26 +104,30 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
             </>
           )}
 
-          <button
-            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
-            onClick={handleFavouritesClick}
-          >
-            Favourites
-          </button>
-          <Link
-            className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
-            to="/ManageProperty"
-          >
-            Manage Property
-          </Link>
+          {userRole && (
+            <>
+              <button
+                className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
+                onClick={handleFavouritesClick}
+              >
+                Favourites
+              </button>
+              <button
+                className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
+                onClick={handleManagePropertyClick}
+              >
+                Manage Property
+              </button>   
+            </>
+          )}
 
           {/* Help link to new page */}
-          <Link
+          <button
             className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
-            to="/Help"
+            onClick={handleHelpClick}
           >
             Help
-          </Link>
+          </button>
         </div>
 
         {userEmail ? (
@@ -117,13 +150,13 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
                   <p className="text-sm text-gray-400">{userRole}</p>
                 </div>
 
-                <Link
-                  to="/account"
+                <button
                   className="flex items-center gap-2 px-4 py-2 text-gray-800 hover:bg-gray-100 w-full"
+                  onClick={handleAccountClick}
                 >
                   <i className="fas fa-cog"></i>
                   Manage Account
-                </Link>
+                </button>
 
                 <button
                   onClick={handleSignOut}
@@ -145,7 +178,7 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
             </Link>
             <Link
               className="bg-violet-700 hover:bg-violet-800 text-white px-4 py-3 rounded-lg transition"
-              to="/Signup"
+              to="/SignUp"
             >
               Sign up
             </Link>
