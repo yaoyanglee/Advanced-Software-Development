@@ -28,7 +28,7 @@ function GoogleSignUp() {
       const userId = user.uid;
       // Save user info to Firestore
       await setDoc(doc(db, "Users", userId), {
-        Emial: googleEmail,
+        Email: googleEmail,
         Name: name,
         PhoneNum: phone,
         Status: status,

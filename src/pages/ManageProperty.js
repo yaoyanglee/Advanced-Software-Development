@@ -12,7 +12,7 @@ import { BiBed, BiBath, BiArea, BiCar } from "react-icons/bi";
 import { Center } from '@chakra-ui/react';
 
 const ManageProperty = () => {
-  const [role, setRole] = useState(null); // Replacing status with role
+  const [status, setStatus] = useState(null);
   const [userEmail, setUserEmail] = useState(null);
   const [activeTab, setActiveTab] = useState("enquires"); // Default active tab
   const [enquiries, setEnquiries] = useState([]);
@@ -42,7 +42,7 @@ const ManageProperty = () => {
 
   // Fetch user data based on email stored in localStorage
   useEffect(() => {
-    const fetchUserRole = async () => {
+    const fetchUserStatus = async () => {
       const email = localStorage.getItem("Email");
       setUserEmail(email);
       const usersRef = collection(db, "Users");
@@ -51,11 +51,11 @@ const ManageProperty = () => {
 
       if (!querySnapshot.empty) {
         const userData = querySnapshot.docs[0].data();
-        setRole(userData.Status); // Set the user role (Tenant/Agent/Landlord)
+        setStatus(userData.Status); // Fetch the user status (Tenant/Agent/Landlord)
       }
     };
 
-    fetchUserRole();
+    fetchUserStatus();
   }, [db]);
 
   // Fetch enquiries based on filter
@@ -81,10 +81,10 @@ const ManageProperty = () => {
       setFilteredEnquiries(fetchedEnquiries); // Apply filter initially
     };
 
-    if (role) {
+    if (status) {
       fetchEnquiries();
     }
-  }, [filterOption, email, role, db]);
+  }, [filterOption, email, status, db]);
 
   // Fetch uploaded properties based on email from both Rent and Sell collections
   const fetchUploadedProperties = async () => {
@@ -103,10 +103,10 @@ const ManageProperty = () => {
   };
 
   useEffect(() => {
-    if (role === "Agent" || role === "Landlord") {
+    if (status === "Agent" || status === "Landlord") {
       fetchUploadedProperties();
     }
-  }, [role]);
+  }, [status]);
 
   // Handle dropdown filter selection
   const handleFilterChange = (filter) => {
@@ -257,7 +257,7 @@ const ManageProperty = () => {
           >
             Enquires
           </div>
-          {role === "Tenant" && (
+          {status === "Tenant" && (
             <div
               className={`mr-6 pb-2 cursor-pointer ${
                 activeTab === "properties" ? "border-b-2 border-blue-500 text-blue-600" : ""
@@ -267,7 +267,7 @@ const ManageProperty = () => {
               Properties
             </div>
           )}
-          {(role === "Agent" || role === "Landlord") && (
+          {(status === "Agent" || status === "Landlord") && (
             <div
               className={`mr-6 pb-2 cursor-pointer ${
                 activeTab === "uploads" ? "border-b-2 border-blue-500 text-blue-600" : ""
@@ -279,7 +279,6 @@ const ManageProperty = () => {
           )}
         </div>
 
-        {/* Enquires tab content */}
         {activeTab === "enquires" && (
           <>
             {/* Filter Dropdown */}
@@ -358,6 +357,7 @@ const ManageProperty = () => {
               )}
             </div>
 
+
             {/* Pop-up modal to show enquiry details */}
             {selectedEnquiry && (
               <div className="fixed z-10 inset-0 flex items-center justify-center bg-gray-500 bg-opacity-75">
@@ -412,7 +412,6 @@ const ManageProperty = () => {
           </>
         )}
 
-        {/* Uploads tab content */}
         {activeTab === "uploads" && (
           <section className="mb-20">
             <div className="container mx-auto max-w-[1100px]">
