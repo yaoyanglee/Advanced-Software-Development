@@ -41,7 +41,15 @@ function GoogleSignUp() {
         onClose: () => navigate("/Login"),
       });
     } catch (error) {
-      toast.error("Invalid access code!", { position: "top-center" });
+      let errorMessage = "";
+      if (error.message.includes("auth/weak-password")) {
+        errorMessage = "Password should be at least 6 characters";
+      } else if (error.message.includes("auth/invalid-email")){
+        errorMessage = "Invalid email used for sign up";
+      } else {
+        errorMessage = "Email already be used for sign up";
+      }
+      toast.error(errorMessage, { position: "top-center" });
       setIsGoogleSigningIn(false);
       return;
     } finally {
