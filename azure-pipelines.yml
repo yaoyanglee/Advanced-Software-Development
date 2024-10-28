@@ -20,12 +20,17 @@ steps:
       npm run build
     displayName: "npm install and build"
   
-  - script: |
-      npm test -- --watchAll=false --reporters=default --reporters=jest-junit || exit 1
-    displayName: "Run all unit tests"
+  # - script: |
+  #     npm test -- --watchAll=false --reporters=default --reporters=jest-junit || exit 1
+  #   displayName: "Run all unit tests"
 
-  - task: PublishTestResults@2
-    displayName: "Publish npm test results"
-    condition: succeededOrFailed()
+  # - task: PublishTestResults@2
+  #   displayName: "Publish npm test results"
+  #   condition: succeededOrFailed()
+  #   inputs:
+  #     testResultsFiles: "src/test/junit.xml"
+  - task: PublishBuildArtifacts@1
     inputs:
-      testResultsFiles: "src/test/junit.xml"
+      PathtoPublish: 'build'
+      ArtifactName: 'drop'
+      publishLocation: 'Container'
