@@ -29,3 +29,8 @@ steps:
     condition: succeededOrFailed()
     inputs:
       testResultsFiles: "src/test/junit.xml"
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: 'build'
+      ArtifactName: 'drop'
+      publishLocation: 'Container'
