@@ -121,7 +121,6 @@ const Navbar = ({ toggleRentModal, toggleSellModal }) => {
             </>
           )}
 
-          {/* Help link to new page */}
           <button
             className="px-4 py-3 hover:bg-violet-300 hover:text-white rounded-lg"
             onClick={handleHelpClick}
