@@ -257,16 +257,6 @@ const ManageProperty = () => {
           >
             Enquires
           </div>
-          {status === "Tenant" && (
-            <div
-              className={`mr-6 pb-2 cursor-pointer ${
-                activeTab === "properties" ? "border-b-2 border-blue-500 text-blue-600" : ""
-              }`}
-              onClick={() => setActiveTab("properties")}
-            >
-              Properties
-            </div>
-          )}
           {(status === "Agent" || status === "Landlord") && (
             <div
               className={`mr-6 pb-2 cursor-pointer ${
@@ -372,7 +362,7 @@ const ManageProperty = () => {
                   <h2 className="text-xl font-semibold mb-4">Enquiry Details</h2>
                   <p><strong>Enquiry Time:</strong> {selectedEnquiry.createdAt?.toDate().toLocaleString()}</p>
                   <p><strong>Name:</strong> {selectedEnquiry.name}</p>
-                  <p><strong>Email:</strong> {selectedEnquiry.email}</p>
+                  <p><strong>Email:</strong> {selectedEnquiry.senderEmail}</p>
                   
                   {selectedEnquiry.phone && (
                     <p><strong>Phone:</strong> {selectedEnquiry.phone}</p>
